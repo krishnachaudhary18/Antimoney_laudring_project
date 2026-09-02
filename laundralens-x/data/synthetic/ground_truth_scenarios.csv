@@ -1,0 +1,11 @@
+scenario_id,account_id,ground_truth_pattern,is_primary_subject
+SCENARIO-001,ACC-B-001,synthetic_suspicious_pattern,True
+SCENARIO-001,ACC-A-001,synthetic_suspicious_pattern,False
+SCENARIO-002,ACC-0104,synthetic_suspicious_pattern,True
+SCENARIO-003,ACC-0114,synthetic_suspicious_pattern,True
+SCENARIO-004,ACC-0124,synthetic_suspicious_pattern,True
+SCENARIO-005,ACC-0174,synthetic_suspicious_pattern,True
+SCENARIO-006,ACC-0111,synthetic_suspicious_pattern,True
+SCENARIO-007,ACC-0127,synthetic_suspicious_pattern,True
+SCENARIO-008,ACC-0194,synthetic_suspicious_pattern,True
+SCENARIO-009,ACC-0224,synthetic_suspicious_pattern,True
