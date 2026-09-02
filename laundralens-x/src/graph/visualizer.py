@@ -13,18 +13,18 @@ import networkx as nx
 from pyvis.network import Network
 
 
-# Color scheme matching dashboard design
+# Color scheme matching DESIGN.md
 COLORS = {
-    "critical": "#ef4444",
-    "high": "#f97316",
-    "medium": "#f59e0b",
-    "low": "#6b7280",
-    "clean": "#3b82f6",
-    "center": "#a78bfa",
-    "downstream": "#10b981",
+    "critical": "#ea2261",  # ruby
+    "high": "#f97316",      # orange
+    "medium": "#f59e0b",    # amber/lemon
+    "low": "#64748d",       # ink-mute
+    "clean": "#3b82f6",     # slate blue
+    "center": "#533afd",    # electric indigo primary
+    "downstream": "#665efd",# primary-soft
 }
 
-BG_COLOR = "#0a0f1e"
+BG_COLOR = "#070e1c"
 FONT_COLOR = "#94a3b8"
 
 

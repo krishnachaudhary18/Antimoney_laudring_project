@@ -39,97 +39,107 @@ class SARDossierGenerator:
     <title>Regulatory SAR Dossier — {case_id}</title>
     <style>
         body {{
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            margin: 40px;
-            color: #1a202c;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            margin: 36px;
+            color: #0d253d;
             background-color: #ffffff;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-feature-settings: "ss01" on;
+            -webkit-font-smoothing: antialiased;
         }}
         .header-table {{
             width: 100%;
-            border-bottom: 2px solid #2d3748;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            border-bottom: 2px solid #0d253d;
+            padding-bottom: 14px;
+            margin-bottom: 22px;
         }}
         .header-title {{
-            font-size: 22px;
-            font-weight: 800;
-            color: #1a365d;
+            font-size: 20px;
+            font-weight: 300;
+            color: #0d253d;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.2px;
         }}
         .header-sub {{
-            font-size: 11px;
-            color: #718096;
+            font-size: 10px;
+            color: #64748d;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
+            margin-top: 2px;
         }}
         .badge {{
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 11px;
+            letter-spacing: 0.2px;
         }}
-        .badge-critical {{ background-color: #fed7d7; color: #9b2c2c; border: 1px solid #feb2b2; }}
-        .badge-high {{ background-color: #feebc8; color: #9c4221; border: 1px solid #fbd38d; }}
+        .badge-critical {{ background-color: rgba(234, 34, 97, 0.12); color: #ea2261; border: 1px solid rgba(234, 34, 97, 0.3); }}
+        .badge-high {{ background-color: rgba(249, 115, 22, 0.12); color: #c2410c; border: 1px solid rgba(249, 115, 22, 0.3); }}
         .section-title {{
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #2b6cb0;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 5px;
-            margin-top: 25px;
-            margin-bottom: 12px;
+            letter-spacing: 0.8px;
+            color: #533afd;
+            border-bottom: 1px solid #e3e8ee;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }}
         table.data-table {{
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }}
         table.data-table th {{
-            background-color: #edf2f7;
-            color: #4a5568;
+            background-color: #f6f9fc;
+            color: #64748d;
             text-align: left;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            font-weight: 600;
+            padding: 7px 10px;
+            border: 1px solid #e3e8ee;
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }}
         table.data-table td {{
-            padding: 8px 10px;
-            border: 1px solid #e2e8f0;
-            color: #2d3748;
+            padding: 7px 10px;
+            border: 1px solid #e3e8ee;
+            color: #0d253d;
+            font-feature-settings: "tnum" on;
         }}
         table.data-table tr:nth-child(even) {{
-            background-color: #f7fafc;
+            background-color: #fafbfc;
         }}
         .metric-grid {{
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }}
         .metric-card {{
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
             padding: 10px;
-            background: #f8fafc;
+            background: #f6f9fc;
             text-align: center;
         }}
         .metric-val {{
-            font-size: 18px;
-            font-weight: 800;
-            color: #2b6cb0;
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: -0.4px;
+            color: #533afd;
+            font-feature-settings: "tnum" on;
         }}
         .metric-lbl {{
             font-size: 10px;
             text-transform: uppercase;
-            color: #718096;
-            margin-top: 3px;
+            color: #64748d;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }}
         .watermark {{
             position: fixed;

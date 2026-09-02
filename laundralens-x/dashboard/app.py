@@ -67,13 +67,17 @@ def api_post(path: str, payload: dict, default=None):
 
 
 def render_header():
-    """Render the LaundraLens X header bar."""
+    """Render the LaundraLens X header bar with Stripi design language."""
     st.markdown("""
     <div class="ll-header">
-        <div class="ll-logo">🔍 LaundraLens X</div>
-        <div style="display:flex; align-items:center; gap:1rem;">
-            <span class="ll-watermark">⚠ SYNTHETIC DEMONSTRATION DATA</span>
-            <span style="color:#475569; font-size:0.8rem;">v1.0.0</span>
+        <div class="ll-logo">
+            <span style="background:linear-gradient(135deg, #665efd, #533afd); width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; font-size:15px;">🔍</span>
+            <span style="font-weight:300; letter-spacing:-0.5px;">LaundraLens <span style="color:#665efd; font-weight:400;">X</span></span>
+            <span style="font-size:11px; color:#64748d; text-transform:uppercase; letter-spacing:0.8px; margin-left:8px; border-left:1px solid rgba(227,232,238,0.15); padding-left:10px;">Financial Crime Intelligence</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+            <span class="ll-watermark">⚠ SYNTHETIC SANDBOX</span>
+            <span class="pill-tag-soft" style="background:rgba(83,58,253,0.18); color:#c7d2fe; border:1px solid rgba(83,58,253,0.35); font-size:10px;">FIU-IND READY</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
