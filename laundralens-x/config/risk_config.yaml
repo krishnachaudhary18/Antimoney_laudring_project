@@ -1,0 +1,52 @@
+# LaundraLens X — Risk Engine Configuration
+
+# Time windows for temporal analysis
+windows:
+  - 15m
+  - 1h
+  - 6h
+  - 24h
+  - 3d
+  - 7d
+
+# Graph settings
+graph:
+  default_hops: 2
+  max_lineage_depth: 4
+  max_path_depth: 4
+
+# Risk band thresholds (score out of 100)
+risk:
+  bands:
+    low: 30       # 0-30 → LOW
+    medium: 60    # 30-60 → MEDIUM
+    high: 80      # 60-80 → HIGH
+    # 80-100 → CRITICAL
+
+# Risk fusion weights (must sum to 1.0)
+weights:
+  xgboost: 0.20
+  isolation_forest: 0.10
+  autoencoder: 0.10
+  behavior: 0.15
+  temporal: 0.15
+  flow: 0.15
+  graph: 0.15
+
+# Behavioral baseline settings
+behavioral:
+  min_history_transactions: 5   # minimum tx for baseline
+  epsilon: 1e-6                  # division safety
+  log_transform: true            # use log1p for amount features
+
+# Flow analysis settings
+flow:
+  conservation_window: 24h      # primary window for conservation ratio
+  epsilon: 1e-6
+
+# Lineage settings
+lineage:
+  max_depth: 4
+  time_proximity_hours: 48      # max hours between hops
+  amount_ratio_threshold: 0.3   # minimum fraction to qualify
+  min_lineage_strength: 0.3

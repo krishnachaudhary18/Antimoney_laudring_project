@@ -1,0 +1,42 @@
+# LaundraLens X — Demo Configuration
+
+demo:
+  seed: 42
+  mode: true
+  case_id: CASE-DEMO-001
+  alert_id: ALERT-DEMO-001
+  primary_account: ACC-B-001   # the rapid redistribution account
+
+# Primary demo scenario accounts
+scenario_accounts:
+  source: ACC-A-001
+  hub: ACC-B-001        # receives large inflow then redistributes
+  recipients:
+    - ACC-C-001
+    - ACC-D-001
+    - ACC-E-001
+    - ACC-F-001
+  downstream:
+    - ACC-G-001         # E → G downstream movement
+
+# Scenario timing (relative to demo start time, in minutes)
+scenario_timing:
+  inflow_at: 0          # A → B ₹10,00,000
+  outflow_1_at: 17      # B → C ₹3,20,000 (new recipient)
+  outflow_2_at: 32      # B → D ₹2,80,000 (new recipient)
+  outflow_3_at: 48      # B → E ₹1,70,000
+  outflow_4_at: 58      # B → F ₹2,00,000 (new recipient)
+  downstream_at: 74     # E → G ₹1,40,000
+
+# Data generation settings
+data:
+  n_accounts: 500
+  n_normal_transactions: 5000
+  n_suspicious_scenarios: 9
+  date_range_days: 30
+
+# Demo UI settings
+ui:
+  auto_open_case: true
+  show_watermark: true
+  watermark_text: "⚠ SYNTHETIC DEMONSTRATION DATA — NOT REAL FINANCIAL DATA"

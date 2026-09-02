@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# Database
+data/laundralens.db
+data/raw/
+data/processed/
+
+# Model artifacts (large files)
+model_artifacts/**/*.pkl
+model_artifacts/**/*.pt
+model_artifacts/**/*.json
+
+# Streamlit
+.streamlit/
+
+# Temp graph files
+*.html
+!dashboard/components/*.html
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
