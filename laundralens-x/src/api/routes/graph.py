@@ -36,6 +36,15 @@ def _get_or_build_graph(db: Session):
     return _graph_cache["graph"]
 
 
+@router.get("/syndicates/detect")
+def detect_syndicates(db: Session = Depends(get_db)):
+    """Detect circular round-tripping and funneling mule syndicates across the entire transaction network."""
+    from src.graph.syndicate import SyndicateForensics
+    G = _get_or_build_graph(db)
+    syndicates = SyndicateForensics.detect_syndicate_patterns(G)
+    return syndicates
+
+
 @router.get("/{account_id}")
 def get_account_graph(
     account_id: str,
@@ -93,3 +102,5 @@ def clear_graph_cache():
     global _graph_cache
     _graph_cache.clear()
     return {"message": "Graph cache cleared"}
+
+

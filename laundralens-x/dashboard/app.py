@@ -173,8 +173,15 @@ def render_main_area():
     render_timeline_panel()
 
     st.divider()
-    # Bottom tabs: Evidence | WHY | Sensitivity | Case Report
-    tab1, tab2, tab3, tab4 = st.tabs(["📎 Evidence", "❓ WHY?", "📊 Score Sensitivity", "📄 Case Report"])
+    # Bottom tabs: Evidence | WHY | Sensitivity | Case Report | Disposition | Playground
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "📎 Evidence Ledger",
+        "❓ WHY? Attribution",
+        "📊 Score Sensitivity",
+        "📄 SAR Report & Dossier",
+        "⚖ Analyst Disposition",
+        "🧪 Scenario Playground",
+    ])
 
     with tab1:
         render_evidence_panel()
@@ -184,6 +191,10 @@ def render_main_area():
         render_sensitivity_panel()
     with tab4:
         render_case_report_panel()
+    with tab5:
+        render_disposition_panel()
+    with tab6:
+        render_scenario_playground_panel()
 
 
 def render_investigation_panel():
@@ -536,20 +547,144 @@ def render_case_report_panel():
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Download button
+    # Download Markdown button
+    col_d1, col_d2 = st.columns(2)
     report_text = report.get("full_text", report.get("body", ""))
-    st.download_button(
-        "⬇ Download Report",
-        data=report_text,
-        file_name=f"{case_id}_report.md",
-        mime="text/markdown",
+    with col_d1:
+        st.download_button(
+            "⬇ Download SAR Markdown Dossier",
+            data=report_text,
+            file_name=f"{case_id}_SAR_dossier.md",
+            mime="text/markdown",
+            use_container_width=True,
+        )
+    with col_d2:
+        dossier_html = api_get(f"/cases/{case_id}/dossier")
+        if dossier_html:
+            st.download_button(
+                "⬇ Download Regulatory HTML Dossier (FIU-IND)",
+                data=str(dossier_html),
+                file_name=f"{case_id}_FIU_IND_dossier.html",
+                mime="text/html",
+                use_container_width=True,
+            )
+
+
+def render_disposition_panel():
+    """Human-in-the-Loop Analyst Disposition Workflow."""
+    st.markdown('<div class="ll-card-title">⚖ COMPLIANCE OFFICER DISPOSITION WORKFLOW</div>', unsafe_allow_html=True)
+    inv_data = st.session_state.investigation_data
+    case_id = inv_data.get("case_id") if inv_data else None
+
+    if not case_id:
+        st.caption("Run an autonomous investigation first to enable compliance decisioning.")
+        return
+
+    st.markdown(
+        f"Record regulatory determination for case <code>{case_id}</code> "
+        f"(Subject: <code>{inv_data.get('account_id')}</code>, Priority: <b>{inv_data.get('priority_score', 0):.1f}</b>).",
+        unsafe_allow_html=True,
     )
+
+    with st.form(key=f"disposition_form_{case_id}"):
+        action = st.selectbox(
+            "Select Regulatory Action",
+            options=[
+                "FILE_SAR",
+                "REQUEST_INFO",
+                "ENHANCED_DILIGENCE",
+                "DISMISS_FALSE_POSITIVE",
+            ],
+            format_func=lambda x: {
+                "FILE_SAR": "🚨 Formal Escalation: File SAR to Financial Intelligence Unit (FIU)",
+                "REQUEST_INFO": "📨 Request for Information (RFI): Demand Proof of Funds",
+                "ENHANCED_DILIGENCE": "🔍 Enhanced Due Diligence (EDD): Place on 30-Day Watchlist",
+                "DISMISS_FALSE_POSITIVE": "✔ Dismiss: Documented Legitimate Commercial Flow",
+            }.get(x, x),
+        )
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            analyst_id = st.text_input("Officer Identifier", value="OFFICER-7429")
+        with col_b:
+            reason_code = st.selectbox(
+                "Regulatory Typology Code",
+                options=[
+                    "TYP-01: Rapid Passthrough Layering",
+                    "TYP-02: High-Velocity Mule Ring",
+                    "TYP-03: Funnel Account Smurfing",
+                    "TYP-04: KYC Profile Misalignment",
+                    "TYP-05: Legitimate Merchant Inflow",
+                ],
+            )
+
+        notes = st.text_area(
+            "Forensic Justification & Decision Notes",
+            value=f"Automated priority score of {inv_data.get('priority_score', 0):.1f} driven by conservation ratio of {inv_data.get('signals', {}).get('flow', 0):.2f}. Action recommended based on corroboration across 3 ML architectures.",
+            height=100,
+        )
+
+        submit_btn = st.form_submit_button("✍ Sign & Commit Regulatory Decision", type="primary", use_container_width=True)
+
+    if submit_btn:
+        payload = {
+            "case_id": case_id,
+            "action": action,
+            "analyst_id": analyst_id,
+            "reason_code": reason_code,
+            "notes": notes,
+        }
+        res = api_post("/decisions", payload)
+        if res:
+            st.success(f"✔ Decision committed: {res.get('action')} — Status: {res.get('escalation_status')} (Ref: {res.get('decision_id')})")
+        else:
+            st.error("Failed to commit decision to audit trail.")
+
+    # Show past audit trail
+    history = api_get(f"/decisions/{case_id}", default=[])
+    if history:
+        st.markdown("**Case Decision Audit Trail:**")
+        for d in history:
+            st.markdown(
+                f"<div class='evidence-item'>"
+                f"<b>{d.get('action')}</b> by <code>{d.get('analyst_id')}</code> at {d.get('timestamp')}<br>"
+                f"<span style='color:#94a3b8; font-size:0.8rem;'>Typology: {d.get('reason_code')} &bull; Status: {d.get('escalation_status')}</span><br>"
+                f"<span style='font-size:0.85rem;'>{d.get('notes')}</span>"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+
+
+def render_scenario_playground_panel():
+    """Interactive Scenario Stress Tester & Playground in Web UI."""
+    st.markdown('<div class="ll-card-title">🧪 SCENARIO STRESS TESTER & ATTACK SIMULATOR</div>', unsafe_allow_html=True)
+    st.caption("Live sandbox for compliance engineers to simulate synthetic financial crime injections and test real-time agent diagnostics.")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        sim_account = st.text_input("Target Test Account", value="ACC-SIM-ALPHA")
+        inflow_amt = st.number_input("Injected Inflow Credit (INR)", min_value=100000.0, max_value=50000000.0, value=3500000.0, step=100000.0)
+    with col2:
+        mule_count = st.slider("Mule Recipient Count", min_value=2, max_value=15, value=5)
+        window_mins = st.slider("Dispersal Time Window (Minutes)", min_value=5, max_value=120, value=30)
+
+    if st.button("🚀 Inject Custom Topology & Execute Investigation", type="primary", use_container_width=True):
+        with st.spinner("Injecting scenario transactions and executing real-time investigation..."):
+            import subprocess
+            cmd = f'python scripts/simulate_scenario.py --account {sim_account} --inflow {inflow_amt} --outflow-count {mule_count} --split-minutes {window_mins}'
+            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=str(ROOT))
+            if proc.returncode == 0:
+                st.success("✔ Scenario successfully injected and diagnosed by AI Investigator!")
+                st.code(proc.stdout, language="text")
+            else:
+                st.error(f"Simulation encountered error: {proc.stderr}")
 
 
 # === MAIN ===
 def main():
     render_sidebar()
     render_main_area()
+
 
 
 if __name__ == "__main__":

@@ -113,7 +113,16 @@ class InvestigationOrchestrator:
             inv = db.query(Investigation).filter(Investigation.case_id == self.case_id).first()
             if inv:
                 inv.started_at = start_time
-                db.commit()
+            else:
+                inv = Investigation(
+                    case_id=self.case_id,
+                    alert_id=self.alert_id,
+                    account_id=self.account_id,
+                    status="INVESTIGATION_STARTED",
+                    started_at=start_time,
+                )
+                db.add(inv)
+            db.commit()
 
             # Load models
             if not registry.models_loaded:

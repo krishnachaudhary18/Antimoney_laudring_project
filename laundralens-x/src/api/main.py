@@ -53,6 +53,8 @@ from src.api.routes.accounts import router as accounts_router
 from src.api.routes.graph import router as graph_router
 from src.api.routes.investigations import router as investigations_router
 from src.api.routes.cases import router as cases_router
+from src.api.routes.decisions import router as decisions_router
+from src.api.routes.stream import router as stream_router
 
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(alerts_router, prefix="/api/v1")
@@ -60,6 +62,8 @@ app.include_router(accounts_router, prefix="/api/v1")
 app.include_router(graph_router, prefix="/api/v1")
 app.include_router(investigations_router, prefix="/api/v1")
 app.include_router(cases_router, prefix="/api/v1")
+app.include_router(decisions_router, prefix="/api/v1")
+app.include_router(stream_router, prefix="/api/v1")
 
 
 @app.exception_handler(Exception)

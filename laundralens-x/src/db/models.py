@@ -110,6 +110,7 @@ class Investigation(Base):
     findings = relationship("Finding", back_populates="investigation")
     model_scores = relationship("ModelScore", back_populates="investigation", uselist=False)
     case_memory = relationship("CaseMemory", back_populates="investigation")
+    decisions = relationship("CaseDecision", back_populates="investigation")
 
 
 class Evidence(Base):
@@ -182,3 +183,20 @@ class CaseMemory(Base):
 
     # Relationships
     investigation = relationship("Investigation", back_populates="case_memory")
+
+
+class CaseDecision(Base):
+    __tablename__ = "case_decisions"
+
+    decision_id = Column(String, primary_key=True)
+    case_id = Column(String, ForeignKey("investigations.case_id"), nullable=False, index=True)
+    action = Column(String, nullable=False)  # FILE_SAR, REQUEST_INFO, ENHANCED_DILIGENCE, DISMISS_FALSE_POSITIVE
+    analyst_id = Column(String, nullable=False)
+    reason_code = Column(String, nullable=False)
+    notes = Column(Text, nullable=True)
+    escalation_status = Column(String, default="PENDING_MLRO_APPROVAL")
+    disposition_timestamp = Column(DateTime, default=func.now())
+
+    # Relationships
+    investigation = relationship("Investigation", back_populates="decisions")
+

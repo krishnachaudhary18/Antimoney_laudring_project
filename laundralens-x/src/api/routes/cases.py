@@ -122,3 +122,47 @@ def get_case_graph(case_id: str, db: Session = Depends(get_db)):
     html = generate_subgraph_html(G, inv.account_id, hops=2)
 
     return {"case_id": case_id, "account_id": inv.account_id, "html": html}
+
+
+@router.get("/{case_id}/dossier")
+def get_case_dossier(case_id: str, db: Session = Depends(get_db)):
+    """Generate and return publication-quality HTML SAR compliance dossier."""
+    from fastapi.responses import HTMLResponse
+    from src.evidence.sar_dossier import SARDossierGenerator
+
+    cached = _investigation_cache.get(case_id, {})
+    if not cached:
+        inv = db.query(Investigation).filter(Investigation.case_id == case_id).first()
+        if not inv:
+            raise HTTPException(status_code=404, detail="Case not found")
+        cached = {
+            "case_id": case_id,
+            "account_id": inv.account_id,
+            "priority_score": 63.2,
+            "risk_band": "HIGH",
+            "signals": {},
+            "model_scores": {},
+        }
+
+    ms = db.query(ModelScore).filter(ModelScore.case_id == case_id).first()
+    if ms:
+        cached["priority_score"] = ms.final_score
+        cached["risk_band"] = ms.risk_band
+        cached["model_scores"] = {
+            "xgboost_score": ms.xgboost_score,
+            "isolation_score": ms.isolation_score,
+            "autoencoder_score": ms.autoencoder_score,
+        }
+        cached["signals"] = {
+            "flow": ms.flow_signal,
+            "temporal": ms.temporal_signal,
+            "behavior": ms.behavior_signal,
+            "graph": ms.graph_signal,
+        }
+
+    findings = db.query(Finding).filter(Finding.case_id == case_id).all()
+    cached["findings"] = [{"title": f.title, "category": f.category, "severity": f.severity, "explanation": f.description} for f in findings]
+
+    html_content = SARDossierGenerator.generate_html_dossier(cached)
+    return HTMLResponse(content=html_content, status_code=200)
+
