@@ -150,6 +150,15 @@ class SARDossierGenerator:
             border-radius: 6px;
             background-color: #f7fafc;
         }}
+        @media print {{
+            body {{ margin: 12mm; font-size: 10.5pt; }}
+            .header-table {{ page-break-after: avoid; }}
+            .signature-box {{ page-break-inside: avoid; }}
+            .data-table tr {{ page-break-inside: avoid; }}
+            .section-title {{ page-break-after: avoid; }}
+            .watermark {{ font-size: 50pt; opacity: 0.15; }}
+            @page {{ size: A4; margin: 10mm; }}
+        }}
     </style>
 </head>
 <body>

@@ -137,6 +137,25 @@ def render_sidebar():
 
         st.divider()
 
+        # Live Payment Radar
+        with st.expander("📡 Live Payment Radar", expanded=False):
+            stream_data = api_get("/stream/recent?limit=5", default={})
+            recent_evs = stream_data.get("events", [])
+            if recent_evs:
+                for ev in recent_evs[:4]:
+                    is_ano = ev.get("is_anomalous", False)
+                    color = "#ef4444" if is_ano else "#10b981"
+                    flag_txt = "🚨 SPIKE" if is_ano else "OK"
+                    st.markdown(
+                        f"<div style='font-size:0.75rem; border-left:2px solid {color}; padding-left:6px; margin-bottom:4px;'>"
+                        f"<b>{ev.get('amount_formatted')}</b> ({flag_txt})<br>"
+                        f"<span style='color:#64748b;'>{ev.get('time_str')} &bull; {ev.get('sender_account_id')} &rarr; {ev.get('receiver_account_id')}</span>"
+                        f"</div>",
+                        unsafe_allow_html=True,
+                    )
+            else:
+                st.caption("Listening on live payment rails... (SSE active)")
+
         # API Status
         health = api_get("/health")
         if health:
@@ -254,9 +273,33 @@ def render_investigation_panel():
 
 
 def render_graph_panel():
-    """Transaction graph visualization via Pyvis."""
-    st.markdown('<div class="ll-card-title">🕸 TRANSACTION GRAPH</div>', unsafe_allow_html=True)
+    """Transaction graph visualization via Pyvis with Syndicate toggle."""
+    col_t1, col_t2 = st.columns([3, 2])
+    with col_t1:
+        st.markdown('<div class="ll-card-title">🕸 TRANSACTION NETWORK GRAPH</div>', unsafe_allow_html=True)
+    with col_t2:
+        graph_mode = st.radio(
+            "Graph Perspective",
+            options=["🎯 Ego-Network", "🌐 Syndicate Rings"],
+            horizontal=True,
+            label_visibility="collapsed",
+            key="graph_view_mode_toggle",
+        )
 
+    import streamlit.components.v1 as components
+
+    if graph_mode == "🌐 Syndicate Rings":
+        with st.spinner("Rendering multi-account syndicate network..."):
+            synd_data = api_get("/graph/syndicates/visualize")
+            if synd_data and synd_data.get("html"):
+                components.html(synd_data["html"], height=460, scrolling=False)
+                risk_val = synd_data.get("risk_score", 0.0)
+                st.caption(f"🌐 Syndicate Network View: Red edges denote circular round-tripping cycles; Amber nodes represent high-throughput transit hubs. (Ring Risk Score: **{risk_val:.0f}/100**)")
+            else:
+                st.info("No syndicate rings detected in current network sample.")
+        return
+
+    # Default Ego-Network view
     account_id = None
     alert_id = st.session_state.selected_alert_id
     if alert_id:
@@ -270,10 +313,9 @@ def render_graph_panel():
 
     graph_data = api_get(f"/graph/{account_id}?hops=2")
     if graph_data and graph_data.get("html"):
-        import streamlit.components.v1 as components
-        components.html(graph_data["html"], height=450, scrolling=False)
+        components.html(graph_data["html"], height=460, scrolling=False)
+        st.caption(f"Ego-network centered on subject <code>{account_id}</code> (2-hop neighborhood). Drag nodes to reposition, scroll to zoom, hover for transfer details.", unsafe_allow_html=True)
     else:
-        # Placeholder while graph module initializes
         st.markdown(
             '<div style="height:420px; display:flex; align-items:center; justify-content:center;'
             'background:rgba(17,26,46,0.8); border:1px dashed rgba(255,255,255,0.1); '

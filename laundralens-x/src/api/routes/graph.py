@@ -45,6 +45,17 @@ def detect_syndicates(db: Session = Depends(get_db)):
     return syndicates
 
 
+@router.get("/syndicates/visualize")
+def visualize_syndicates(db: Session = Depends(get_db)):
+    """Generate Pyvis interactive HTML visualization of all detected syndicates."""
+    from src.graph.syndicate import SyndicateForensics
+    from src.graph.visualizer import generate_syndicate_graph_html
+    G = _get_or_build_graph(db)
+    syndicates = SyndicateForensics.detect_syndicate_patterns(G)
+    html = generate_syndicate_graph_html(G, syndicates)
+    return {"html": html, "risk_score": syndicates.get("syndicate_risk_score", 0.0)}
+
+
 @router.get("/{account_id}")
 def get_account_graph(
     account_id: str,

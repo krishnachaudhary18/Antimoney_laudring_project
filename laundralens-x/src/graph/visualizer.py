@@ -211,3 +211,114 @@ def _empty_graph_html(message: str) -> str:
         border:1px dashed #1e3a5f;border-radius:12px;
     ">{message}</div>
     """
+
+
+def generate_syndicate_graph_html(G: nx.DiGraph, syndicates_data: dict) -> str:
+    """
+    Generate Pyvis HTML specifically highlighting circular round-tripping rings
+    and bipartite funnel transit hubs across the network.
+    """
+    cycles = syndicates_data.get("round_tripping_cycles", [])
+    hubs = syndicates_data.get("hub_bridges", [])
+
+    # Collect all relevant nodes
+    cycle_nodes = set()
+    cycle_edges = set()
+    for c in cycles:
+        ring = c.get("ring_accounts", [])
+        cycle_nodes.update(ring)
+        for i in range(len(ring)):
+            u = ring[i]
+            v = ring[(i + 1) % len(ring)]
+            cycle_edges.add((u, v))
+
+    hub_nodes = {h["hub_account"] for h in hubs}
+    hub_connected = set()
+    for h in hubs:
+        hub_connected.update(h.get("connected_accounts", []))
+
+    all_syndicate_nodes = cycle_nodes | hub_nodes | hub_connected
+    if not all_syndicate_nodes:
+        return _empty_graph_html("No coordinated syndicates detected in current network sample.")
+
+    subgraph = G.subgraph(all_syndicate_nodes).copy()
+
+    net = Network(
+        height="480px",
+        width="100%",
+        bgcolor=BG_COLOR,
+        font_color=FONT_COLOR,
+        directed=True,
+    )
+    net.set_options("""
+    {
+        "physics": {
+            "enabled": true,
+            "stabilization": {"iterations": 120},
+            "barnesHut": {
+                "gravitationalConstant": -4000,
+                "springLength": 140,
+                "springConstant": 0.05
+            }
+        },
+        "edges": {
+            "arrows": {"to": {"enabled": true, "scaleFactor": 0.6}},
+            "smooth": {"type": "curvedCW", "roundness": 0.25}
+        },
+        "nodes": {
+            "shape": "dot",
+            "font": {"size": 11, "color": "#94a3b8"}
+        }
+    }
+    """)
+
+    for node_id in subgraph.nodes():
+        if node_id in cycle_nodes:
+            color = "#ef4444"
+            size = 26
+            border = "#f87171"
+            title = f"Syndicate Ring Mule: {node_id}<br>Part of Circular Round-Tripping Ring"
+        elif node_id in hub_nodes:
+            color = "#f59e0b"
+            size = 30
+            border = "#fbbf24"
+            title = f"Bipartite Transit Hub: {node_id}<br>High-Throughput Smurfing Bridge"
+        else:
+            color = "#3b82f6"
+            size = 14
+            border = "#1e3a5f"
+            title = f"Counterparty Account: {node_id}"
+
+        net.add_node(
+            node_id,
+            label=node_id[-8:],
+            color={"background": color, "border": border},
+            size=size,
+            title=title,
+            borderWidth=3 if (node_id in cycle_nodes or node_id in hub_nodes) else 1,
+        )
+
+    for u, v, data in subgraph.edges(data=True):
+        weight = data.get("weight", 0.0)
+        is_cycle_edge = (u, v) in cycle_edges
+        edge_color = "#ef4444" if is_cycle_edge else ("#f59e0b" if (u in hub_nodes or v in hub_nodes) else "#334155")
+        width = 3.5 if is_cycle_edge else 1.5
+
+        net.add_edge(
+            u, v,
+            value=width,
+            color=edge_color,
+            title=f"Rs {weight:,.0f} ({'CYCLIC FLOW' if is_cycle_edge else 'TRANSFER'})",
+        )
+
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".html", delete=False, encoding="utf-8") as f:
+            temp_path = f.name
+        net.save_graph(temp_path)
+        with open(temp_path, "r", encoding="utf-8") as f:
+            html = f.read()
+        os.unlink(temp_path)
+        return html
+    except Exception as e:
+        return _empty_graph_html(f"Syndicate render error: {e}")
+
