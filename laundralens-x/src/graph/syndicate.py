@@ -29,31 +29,41 @@ class SyndicateForensics:
         if G.number_of_nodes() < 3:
             return results
 
-        # 1. Detect Round-Tripping Cycles (Directed Simple Cycles)
+        # 1. Detect Round-Tripping Cycles (Directed 3-Hop and 4-Hop Cycles)
         try:
-            # Find simple cycles of length between 3 and max_cycle_length
-            all_cycles = list(nx.simple_cycles(G))
-            valid_cycles = [c for c in all_cycles if 3 <= len(c) <= max_cycle_length]
+            seen_cycles: Set[Tuple[str, ...]] = set()
 
-            for cycle in valid_cycles[:10]:
-                cycle_volume = 0.0
-                edges_info = []
-                for i in range(len(cycle)):
-                    u = cycle[i]
-                    v = cycle[(i + 1) % len(cycle)]
-                    if G.has_edge(u, v):
-                        w = G[u][v].get("weight", 0.0)
-                        cycle_volume += w
-                        edges_info.append({"from": u, "to": v, "amount": round(w, 2)})
-
-                results["round_tripping_cycles"].append({
-                    "ring_accounts": cycle,
-                    "length": len(cycle),
-                    "cycle_volume": round(cycle_volume, 2),
-                    "edges": edges_info,
-                    "typology": "circular_layering_cycle",
-                })
-                results["total_ring_exposure_inr"] += cycle_volume
+            # 3-hop cycles: A -> B -> C -> A
+            for a in G.nodes():
+                if len(results["round_tripping_cycles"]) >= 10:
+                    break
+                for b in G.successors(a):
+                    if b == a:
+                        continue
+                    for c in G.successors(b):
+                        if c == a or c == b:
+                            continue
+                        if G.has_edge(c, a):
+                            canonical = tuple(sorted([a, b, c]))
+                            if canonical not in seen_cycles:
+                                seen_cycles.add(canonical)
+                                cycle = [a, b, c]
+                                vol = G[a][b].get("weight", 0.0) + G[b][c].get("weight", 0.0) + G[c][a].get("weight", 0.0)
+                                edges_info = [
+                                    {"from": a, "to": b, "amount": round(G[a][b].get("weight", 0.0), 2)},
+                                    {"from": b, "to": c, "amount": round(G[b][c].get("weight", 0.0), 2)},
+                                    {"from": c, "to": a, "amount": round(G[c][a].get("weight", 0.0), 2)},
+                                ]
+                                results["round_tripping_cycles"].append({
+                                    "ring_accounts": cycle,
+                                    "length": 3,
+                                    "cycle_volume": round(vol, 2),
+                                    "edges": edges_info,
+                                    "typology": "circular_layering_cycle",
+                                })
+                                results["total_ring_exposure_inr"] += vol
+                                if len(results["round_tripping_cycles"]) >= 10:
+                                    break
         except Exception:
             pass
 
