@@ -28,17 +28,17 @@ def render_stream_radar(recent_events: List[Dict[str, Any]]):
 
     for ev in recent_events[:10]:
         is_ano = ev.get("is_anomalous", False)
-        border_color = "rgba(239,68,68,0.5)" if is_ano else "rgba(255,255,255,0.05)"
-        bg_color = "rgba(239,68,68,0.08)" if is_ano else "rgba(17,26,46,0.5)"
+        border_color = "rgba(234,34,97,0.3)" if is_ano else "var(--color-hairline)"
+        bg_color = "rgba(234,34,97,0.04)" if is_ano else "#ffffff"
 
-        badge = '<span style="color:#ef4444; font-weight:800; font-size:0.75rem; background:rgba(239,68,68,0.2); padding:2px 6px; border-radius:4px;">🚨 VELOCITY SPIKE</span>' if is_ano else '<span style="color:#10b981; font-size:0.75rem;">✔ NORMAL</span>'
+        badge = '<span class="pill-tag-soft badge-critical">VELOCITY SPIKE</span>' if is_ano else '<span class="pill-tag-soft badge-success">NORMAL</span>'
 
         st.markdown(
             f'<div style="border:1px solid {border_color}; background:{bg_color}; border-radius:8px; padding:8px 12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">'
             f'<div>'
-            f'<span style="font-family:monospace; color:#94a3b8; font-size:0.8rem; margin-right:8px;">{ev.get("time_str")}</span>'
-            f'<span style="font-weight:700; color:#f1f5f9; font-size:0.9rem; margin-right:12px;">{ev.get("amount_formatted")}</span>'
-            f'<span style="color:#64748b; font-size:0.8rem;">{ev.get("channel")} &bull; <code>{ev.get("sender_account_id")}</code> &rarr; <code>{ev.get("receiver_account_id")}</code> ({ev.get("location")})</span>'
+            f'<span style="font-family:monospace; color:#64748d; font-size:11px; margin-right:8px;">{ev.get("time_str")}</span>'
+            f'<span style="font-weight:600; color:#0d253d; font-size:13px; margin-right:12px;" class="tnum">{ev.get("amount_formatted")}</span>'
+            f'<span style="color:#64748d; font-size:12px;">{ev.get("channel")} &bull; <code>{ev.get("sender_account_id")}</code> &rarr; <code>{ev.get("receiver_account_id")}</code> ({ev.get("location")})</span>'
             f'</div>'
             f'<div>{badge}</div>'
             f'</div>',

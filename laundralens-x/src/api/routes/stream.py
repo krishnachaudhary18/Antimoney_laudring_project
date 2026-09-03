@@ -49,8 +49,8 @@ async def stream_live_transactions():
 def populate_buffer_sample(count: int = 10):
     """Seed buffer with immediate realistic transactions if empty."""
     import random, uuid
-    from datetime import datetime, timedelta
-    now = datetime.utcnow()
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
     channels = ["UPI", "IMPS", "NEFT", "RTGS"]
     locations = ["Mumbai", "Bengaluru", "Delhi", "Hyderabad", "Pune"]
     for i in range(count):

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import uuid
 from typing import Dict, List, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from src.db.models import CaseMemory
@@ -25,7 +25,7 @@ class CaseMemoryManager:
             "memory_type": memory_type,
             "key": key,
             "value": value,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         self._local_memory.append(entry)
 

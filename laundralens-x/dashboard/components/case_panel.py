@@ -19,7 +19,7 @@ def render_case_panel(report_data: Dict[str, Any], on_generate_report: Callable[
         return
 
     st.markdown(
-        '<div class="ll-card" style="border-color:rgba(139,92,246,0.3);">'
+        '<div class="ll-card" style="border-color:rgba(83,58,253,0.25);">'
         '<div class="ll-card-title">🤖 AI-GENERATED INVESTIGATION REPORT</div>',
         unsafe_allow_html=True,
     )
@@ -27,8 +27,8 @@ def render_case_panel(report_data: Dict[str, Any], on_generate_report: Callable[
     st.markdown(report_data.get("full_text", report_data.get("body", "Report unavailable.")))
 
     st.markdown(
-        '<div style="margin-top:1rem; padding:0.6rem; background:rgba(245,158,11,0.1);'
-        'border:1px solid rgba(245,158,11,0.3); border-radius:6px; font-size:0.75rem; color:#fcd34d;">'
+        '<div style="margin-top:1rem; padding:0.6rem; background:rgba(245,158,11,0.08);'
+        'border:1px solid rgba(245,158,11,0.25); border-radius:6px; font-size:12px; color:#b45309;">'
         '⚠ This report is compiled for investigative decision support only. All filings require human compliance review. '
         'Generated from synthetic demonstration data.</div>',
         unsafe_allow_html=True,

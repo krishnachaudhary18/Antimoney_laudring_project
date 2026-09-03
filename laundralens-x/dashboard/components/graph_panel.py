@@ -15,12 +15,12 @@ def render_graph_panel(graph_html: Optional[str], account_id: str, current_hops:
 
     if graph_html:
         components.html(graph_html, height=450, scrolling=False)
-        st.caption(f"Ego-network centered on `{account_id}` ({current_hops}-hop radius). Interactive: drag nodes, scroll to zoom, hover for transfer details.")
+        st.caption(f"Ego-network centered on <code>{account_id}</code> ({current_hops}-hop radius). Interactive: drag nodes, scroll to zoom, hover for transfer details.", unsafe_allow_html=True)
     else:
         st.markdown(
             '<div style="height:420px; display:flex; align-items:center; justify-content:center;'
-            'background:rgba(17,26,46,0.8); border:1px dashed rgba(255,255,255,0.1); '
-            'border-radius:12px; color:#475569; font-size:0.9rem;">'
+            'background:#ffffff; border:1px dashed #e3e8ee; '
+            'border-radius:12px; color:#64748d; font-size:13px;">'
             'Transaction graph loading or awaiting case selection.'
             '</div>',
             unsafe_allow_html=True,

@@ -30,29 +30,19 @@ def render_case_queue(alerts: List[Dict[str, Any]], on_select: Callable[[str], N
 
     st.caption(f"Showing {len(filtered)} alerts")
 
-    # Badges and buttons
-    band_emojis = {
-        "CRITICAL": "🔴",
-        "HIGH": "🟠",
-        "MEDIUM": "🟡",
-        "LOW": "⚪",
-    }
-
     for alert in filtered:
         aid = alert.get("alert_id", "")
         acc_id = alert.get("account_id", "")
         band = alert.get("risk_band", "LOW")
         score = alert.get("priority_score", 0.0)
-        emoji = band_emojis.get(band, "⚪")
 
-        label = f"{emoji} {aid} · {acc_id} ({score:.0f})"
-
+        label = f"{aid} · {acc_id} ({score:.0f})"
         is_selected = (st.session_state.get("selected_alert_id") == aid)
 
         if st.button(
             label,
             key=f"queue_item_{aid}",
-            use_container_width=True,
+            width='stretch',
             type="primary" if is_selected else "secondary",
         ):
             on_select(aid)

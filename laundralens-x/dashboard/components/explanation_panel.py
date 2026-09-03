@@ -16,7 +16,7 @@ def render_explanation_panel(shap_contributions: Dict[str, float], explanations:
     if shap_contributions:
         features = list(shap_contributions.keys())[:10]
         values = [shap_contributions[f] for f in features]
-        colors = ["#ef4444" if v > 0 else "#10b981" for v in values]
+        colors = ["#ea2261" if v > 0 else "#10b981" for v in values]
 
         fig = go.Figure(go.Bar(
             x=values,
@@ -27,23 +27,23 @@ def render_explanation_panel(shap_contributions: Dict[str, float], explanations:
             textposition="outside",
         ))
         fig.update_layout(
-            title="Tree-Based Feature Attributions (SHAP)",
+            title=dict(text="Tree Feature Attributions (SHAP)", font=dict(size=13, color="#0d253d", family="Inter")),
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(17,26,46,0.5)",
-            font_color="#94a3b8",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font_color="#273951",
             font_family="Inter",
             height=320,
             margin=dict(l=20, r=20, t=40, b=20),
-            xaxis=dict(gridcolor="rgba(255,255,255,0.05)"),
-            yaxis=dict(autorange="reversed"),
+            xaxis=dict(gridcolor="#edf2f7", zerolinecolor="#cbd5e1", tickfont=dict(size=11, color="#64748d")),
+            yaxis=dict(tickfont=dict(size=11, color="#273951"), autorange="reversed"),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
     if explanations:
         st.markdown("**Analyst Key Observations:**")
         for item in explanations:
             st.markdown(
-                f'<div class="evidence-item animate-in">'
+                f'<div class="evidence-item">'
                 f'<b>{item.get("signal", "")}</b> &mdash; {item.get("description", "")}'
                 f'</div>',
                 unsafe_allow_html=True,

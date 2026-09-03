@@ -6,7 +6,7 @@ following FIU-IND / PMLA and global financial crime reporting standards.
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Any
 
 
@@ -26,10 +26,10 @@ class SARDossierGenerator:
         evidence = case_data.get("evidence", [])
 
         # Integrity hash for digital provenance
-        raw_payload = f"{case_id}-{account_id}-{score}-{datetime.utcnow().strftime('%Y%m%d')}"
+        raw_payload = f"{case_id}-{account_id}-{score}-{datetime.now(timezone.utc).strftime('%Y%m%d')}"
         dossier_hash = hashlib.sha256(raw_payload.encode()).hexdigest().upper()
 
-        timestamp_str = datetime.utcnow().strftime("%d-%b-%Y %H:%M:%S UTC")
+        timestamp_str = datetime.now(timezone.utc).strftime("%d-%b-%Y %H:%M:%S UTC")
 
         # HTML generation with formal bank compliance styling
         html = f"""<!DOCTYPE html>

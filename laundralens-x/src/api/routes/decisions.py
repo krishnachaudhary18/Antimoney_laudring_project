@@ -5,7 +5,7 @@ Human-in-the-loop regulatory sign-off, SAR filing approval, and audit trails.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -44,7 +44,7 @@ def record_decision(req: DecisionSubmissionRequest, db: Session = Depends(get_db
         reason_code=req.reason_code,
         notes=req.notes,
         escalation_status="SUBMITTED_TO_FIU" if req.action == "FILE_SAR" else "DISPOSITIONED",
-        disposition_timestamp=datetime.utcnow(),
+        disposition_timestamp=datetime.now(timezone.utc),
     )
     db.add(decision)
 

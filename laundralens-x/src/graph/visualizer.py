@@ -24,24 +24,24 @@ COLORS = {
     "downstream": "#665efd",# primary-soft
 }
 
-BG_COLOR = "#070e1c"
-FONT_COLOR = "#94a3b8"
+BG_COLOR = "#ffffff"
+FONT_COLOR = "#0d253d"
 
 
 def _get_node_color(node_id: str, G: nx.DiGraph, center_id: Optional[str] = None) -> tuple[str, int]:
     """Determine node color and size based on risk attributes."""
     if node_id == center_id:
-        return COLORS["center"], 30
+        return COLORS["center"], 28
 
     node_data = G.nodes.get(node_id, {})
     suspicious = node_data.get("suspicious", False)
     volume = node_data.get("total_volume", 0.0)
 
     # Size based on transaction volume (capped)
-    size = max(10, min(25, int(volume / 50000)))
+    size = max(10, min(24, int(volume / 50000)))
 
     if suspicious:
-        return COLORS["critical"], size + 5
+        return COLORS["critical"], size + 4
     return COLORS["clean"], size
 
 
@@ -119,14 +119,14 @@ def _build_pyvis_html(
         },
         "edges": {
             "arrows": {"to": {"enabled": true, "scaleFactor": 0.5}},
-            "color": {"inherit": false, "color": "#334155"},
+            "color": {"inherit": false, "color": "#cbd5e1"},
             "smooth": {"type": "curvedCW", "roundness": 0.2},
             "width": 1.5
         },
         "nodes": {
             "shape": "dot",
             "borderWidth": 2,
-            "font": {"size": 11, "color": "#94a3b8"}
+            "font": {"size": 11, "color": "#0d253d", "face": "Inter, sans-serif"}
         },
         "interaction": {
             "hover": true,
@@ -153,10 +153,10 @@ def _build_pyvis_html(
         # Override for highlighted
         if node_id in highlight_set:
             color = COLORS["high"]
-            size = 25
+            size = 24
 
-        # Glow border for suspicious/center nodes
-        border_color = "#ef4444" if suspicious else ("#a78bfa" if node_id == center_id else "#1e3a5f")
+        # Clean borders for suspicious/center nodes
+        border_color = "#ea2261" if suspicious else ("#533afd" if node_id == center_id else "#cbd5e1")
         border_width = 3 if (suspicious or node_id == center_id) else 1
 
         net.add_node(
@@ -176,11 +176,11 @@ def _build_pyvis_html(
 
         # Color edges from center or to center
         if u == center_id:
-            edge_color = "#ef4444"
+            edge_color = "#ea2261"
         elif v == center_id:
             edge_color = "#10b981"
         else:
-            edge_color = "#334155"
+            edge_color = "#cbd5e1"
 
         net.add_edge(
             u, v,
@@ -207,8 +207,8 @@ def _empty_graph_html(message: str) -> str:
     return f"""
     <div style="
         height:420px;display:flex;align-items:center;justify-content:center;
-        background:{BG_COLOR};color:#475569;font-family:Inter,sans-serif;font-size:14px;
-        border:1px dashed #1e3a5f;border-radius:12px;
+        background:#ffffff;color:#64748d;font-family:Inter,sans-serif;font-size:13px;
+        border:1px dashed #e3e8ee;border-radius:12px;
     ">{message}</div>
     """
 
@@ -267,26 +267,26 @@ def generate_syndicate_graph_html(G: nx.DiGraph, syndicates_data: dict) -> str:
         },
         "nodes": {
             "shape": "dot",
-            "font": {"size": 11, "color": "#94a3b8"}
+            "font": {"size": 11, "color": "#0d253d", "face": "Inter, sans-serif"}
         }
     }
     """)
 
     for node_id in subgraph.nodes():
         if node_id in cycle_nodes:
-            color = "#ef4444"
-            size = 26
-            border = "#f87171"
+            color = "#ea2261"
+            size = 24
+            border = "#c01549"
             title = f"Syndicate Ring Mule: {node_id}<br>Part of Circular Round-Tripping Ring"
         elif node_id in hub_nodes:
             color = "#f59e0b"
-            size = 30
-            border = "#fbbf24"
+            size = 28
+            border = "#d97706"
             title = f"Bipartite Transit Hub: {node_id}<br>High-Throughput Smurfing Bridge"
         else:
             color = "#3b82f6"
             size = 14
-            border = "#1e3a5f"
+            border = "#cbd5e1"
             title = f"Counterparty Account: {node_id}"
 
         net.add_node(
@@ -295,14 +295,14 @@ def generate_syndicate_graph_html(G: nx.DiGraph, syndicates_data: dict) -> str:
             color={"background": color, "border": border},
             size=size,
             title=title,
-            borderWidth=3 if (node_id in cycle_nodes or node_id in hub_nodes) else 1,
+            borderWidth=2 if (node_id in cycle_nodes or node_id in hub_nodes) else 1,
         )
 
     for u, v, data in subgraph.edges(data=True):
         weight = data.get("weight", 0.0)
         is_cycle_edge = (u, v) in cycle_edges
-        edge_color = "#ef4444" if is_cycle_edge else ("#f59e0b" if (u in hub_nodes or v in hub_nodes) else "#334155")
-        width = 3.5 if is_cycle_edge else 1.5
+        edge_color = "#ea2261" if is_cycle_edge else ("#f59e0b" if (u in hub_nodes or v in hub_nodes) else "#cbd5e1")
+        width = 3 if is_cycle_edge else 1.5
 
         net.add_edge(
             u, v,

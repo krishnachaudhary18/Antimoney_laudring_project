@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import uuid
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 
 import pandas as pd
@@ -75,7 +75,7 @@ class InvestigationOrchestrator:
             "tool": tool_name,
             "arguments": args,
             "result_summary": result_summary,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "duration_ms": duration_ms,
             "status": "success",
         }
@@ -88,7 +88,7 @@ class InvestigationOrchestrator:
         if inv:
             inv.status = state
             db.commit()
-        self.progress_steps.append({"state": state, "timestamp": datetime.utcnow().isoformat()})
+        self.progress_steps.append({"state": state, "timestamp": datetime.now(timezone.utc).isoformat()})
 
     def _add_finding(self, category: str, severity: str, title: str, description: str,
                      calculation: str = None, data: Dict = None, primary_tx_id: str = None):
@@ -109,7 +109,7 @@ class InvestigationOrchestrator:
         Returns complete investigation result dict.
         """
         with SessionLocal() as db:
-            start_time = datetime.utcnow()
+            start_time = datetime.now(timezone.utc)
             self._update_state(db, "INVESTIGATION_STARTED")
             inv = db.query(Investigation).filter(Investigation.case_id == self.case_id).first()
             if inv:
@@ -360,7 +360,7 @@ class InvestigationOrchestrator:
             self._persist_results(db, priority_score, risk_band, shap, counterfactual)
             self._update_state(db, "REPORT_READY")
 
-            end_time = datetime.utcnow()
+            end_time = datetime.now(timezone.utc)
             duration_s = (end_time - start_time).total_seconds()
 
             result = {
@@ -472,7 +472,7 @@ class InvestigationOrchestrator:
         # Update investigation
         inv = db.query(Investigation).filter(Investigation.case_id == self.case_id).first()
         if inv:
-            inv.completed_at = datetime.utcnow()
+            inv.completed_at = datetime.now(timezone.utc)
             inv.summary = (
                 f"Investigation Priority: {priority_score}/100 [{risk_band}]. "
                 f"{len(self.findings)} findings. {len(self.evidence)} evidence items. "

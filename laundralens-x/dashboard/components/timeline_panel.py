@@ -24,17 +24,17 @@ def render_timeline_panel(events: List[Dict[str, Any]]):
         channel = ev.get("channel", "")
         annotations = ev.get("annotations", [])
 
-        color = "#10b981" if is_inflow else "#ef4444"
+        color = "#047857" if is_inflow else "#c01549"
         dir_symbol = "+ INFLOW" if is_inflow else "- OUTFLOW"
 
         ann_html = "".join([f'<span class="timeline-annotation">{a}</span>' for a in annotations])
 
         st.markdown(
-            f'<div class="timeline-event animate-in">'
+            f'<div class="timeline-event">'
             f'<span class="timeline-time">{time_str}</span>'
-            f'<span style="color:{color}; font-weight:700; min-width:85px;">{dir_symbol}</span>'
-            f'<span style="font-weight:700; color:#f1f5f9; min-width:90px;">{amt_str}</span>'
-            f'<span style="color:#94a3b8; font-size:0.85rem;">via {channel} &bull; Counterparty: <code>{counterparty}</code></span>'
+            f'<span style="color:{color}; font-weight:600; min-width:85px;">{dir_symbol}</span>'
+            f'<span style="font-weight:600; color:#0d253d; min-width:90px;" class="tnum">{amt_str}</span>'
+            f'<span style="color:#64748d; font-size:12px;">via {channel} &bull; Counterparty: <code>{counterparty}</code></span>'
             f'{ann_html}'
             f'</div>',
             unsafe_allow_html=True,

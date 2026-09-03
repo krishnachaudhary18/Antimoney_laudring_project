@@ -9,7 +9,7 @@ import asyncio
 import json
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import AsyncGenerator, Dict, Any
 
 CHANNELS = ["UPI", "IMPS", "NEFT", "RTGS"]
@@ -30,7 +30,7 @@ class LiveTransactionStreamer:
 
         while self._running:
             self._counter += 1
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
 
             # Every 12-15 transactions, inject a suspicious high-value rapid transfer
             is_anomaly = (self._counter % 12 == 0)

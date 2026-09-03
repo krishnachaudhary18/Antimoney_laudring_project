@@ -4,7 +4,7 @@ Clean data access abstraction for accounts, transactions, alerts, and investigat
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -114,7 +114,7 @@ class InvestigationRepository:
             alert_id=alert_id,
             account_id=account_id,
             status="ALERT_CREATED",
-            started_at=datetime.utcnow(),
+            started_at=datetime.now(timezone.utc),
         )
         self.db.add(inv)
         self.db.commit()
