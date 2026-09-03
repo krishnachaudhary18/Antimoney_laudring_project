@@ -48,12 +48,15 @@ def detect_syndicates(db: Session = Depends(get_db)):
 @router.get("/syndicates/visualize")
 def visualize_syndicates(db: Session = Depends(get_db)):
     """Generate Pyvis interactive HTML visualization of all detected syndicates."""
-    from src.graph.syndicate import SyndicateForensics
-    from src.graph.visualizer import generate_syndicate_graph_html
-    G = _get_or_build_graph(db)
-    syndicates = SyndicateForensics.detect_syndicate_patterns(G)
-    html = generate_syndicate_graph_html(G, syndicates)
-    return {"html": html, "risk_score": syndicates.get("syndicate_risk_score", 0.0)}
+    global _graph_cache
+    if "syndicates_html" not in _graph_cache:
+        from src.graph.syndicate import SyndicateForensics
+        from src.graph.visualizer import generate_syndicate_graph_html
+        G = _get_or_build_graph(db)
+        syndicates = SyndicateForensics.detect_syndicate_patterns(G)
+        html = generate_syndicate_graph_html(G, syndicates)
+        _graph_cache["syndicates_html"] = {"html": html, "risk_score": syndicates.get("syndicate_risk_score", 0.0)}
+    return _graph_cache["syndicates_html"]
 
 
 @router.get("/{account_id}")
@@ -63,11 +66,14 @@ def get_account_graph(
     db: Session = Depends(get_db),
 ):
     """Get Pyvis HTML subgraph for an account."""
-    from src.graph.visualizer import generate_subgraph_html
-
-    G = _get_or_build_graph(db)
-    html = generate_subgraph_html(G, account_id, hops=hops)
-    return {"account_id": account_id, "hops": hops, "html": html}
+    global _graph_cache
+    cache_key = f"subgraph_{account_id}_{hops}"
+    if cache_key not in _graph_cache:
+        from src.graph.visualizer import generate_subgraph_html
+        G = _get_or_build_graph(db)
+        html = generate_subgraph_html(G, account_id, hops=hops)
+        _graph_cache[cache_key] = {"account_id": account_id, "hops": hops, "html": html}
+    return _graph_cache[cache_key]
 
 
 @router.get("/{account_id}/neighbors")

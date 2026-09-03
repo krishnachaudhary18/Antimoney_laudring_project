@@ -66,6 +66,19 @@ app.include_router(decisions_router, prefix="/api/v1")
 app.include_router(stream_router, prefix="/api/v1")
 
 
+@app.get("/")
+async def root():
+    """Root endpoint — redirect to API docs or show welcome message."""
+    return {
+        "service": "LaundraLens X",
+        "version": "1.0.0",
+        "description": "Agentic Temporal-Graph Intelligence for Financial Crime Investigation",
+        "docs": "/api/docs",
+        "health": "/api/v1/health",
+        "dashboard": "http://localhost:8501",
+    }
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     logger.error(f"Unhandled exception: {exc}", exc_info=True)

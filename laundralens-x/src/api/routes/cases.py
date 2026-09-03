@@ -51,6 +51,9 @@ def generate_report(case_id: str, db: Session = Depends(get_db)):
     from src.evidence.report import generate_report_with_gemini
 
     cached = _investigation_cache.get(case_id, {})
+    if cached and cached.get("report"):
+        return {"case_id": case_id, "report": cached["report"]}
+
     if not cached:
         inv = db.query(Investigation).filter(Investigation.case_id == case_id).first()
         if not inv:
