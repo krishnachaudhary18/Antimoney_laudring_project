@@ -44,7 +44,8 @@
     box-sizing: border-box;
 }
 
-/* === HIDE UNWANTED STREAMLIT CHROME & KEYBOARD_DOUBL ARTIFACTS === */
+/* === HIDE UNWANTED STREAMLIT CHROME & SIDEBAR HEADER === */
+[data-testid="stSidebarHeader"],
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"],
 header[data-testid="stHeader"],
@@ -53,8 +54,11 @@ header[data-testid="stHeader"],
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    overflow: hidden !important;
 }
 
 /* === VIEWPORT & MAIN WRAPPER === */
@@ -74,9 +78,9 @@ html, body, [data-testid="stApp"] {
 
 /* === TIGHTEN SIDEBAR WIDTH & DOCKING (REMOVE MIDDLE GAP & TOP PADDING) === */
 [data-testid="stSidebar"] {
-    width: 236px !important;
-    min-width: 236px !important;
-    max-width: 236px !important;
+    width: 252px !important;
+    min-width: 252px !important;
+    max-width: 252px !important;
     background-color: var(--bg-sidebar) !important;
     border-right: 1px solid var(--border-light) !important;
     box-shadow: none !important;
@@ -84,16 +88,16 @@ html, body, [data-testid="stApp"] {
 }
 
 [data-testid="stSidebar"] > div:first-child {
-    width: 236px !important;
+    width: 252px !important;
     padding: 0 !important;
 }
 
 [data-testid="stSidebarContent"],
 [data-testid="stSidebarUserContent"] {
-    padding-top: 8px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    padding-bottom: 12px !important;
+    padding-top: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-bottom: 16px !important;
 }
 
 /* Kill Streamlit's internal sidebar top spacer */
@@ -104,7 +108,7 @@ html, body, [data-testid="stApp"] {
 }
 
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-    gap: 3px !important;
+    gap: 4px !important;
 }
 
 [data-testid="stSidebar"] * {
@@ -940,15 +944,23 @@ html, body, [data-testid="stApp"] {
     border: 1px solid var(--border-light) !important;
 }
 
-/* === SIDEBAR BUTTON SIZE REDUCTION === */
+/* === SIDEBAR BUTTON SIZE REDUCTION & NO OVERLAP === */
+[data-testid="stSidebar"] .stButton {
+    margin-bottom: 2px !important;
+}
+
 [data-testid="stSidebar"] .stButton > button {
     font-size: 11.5px !important;
-    padding: 3px 8px !important;
-    min-height: 29px !important;
-    height: 29px !important;
-    line-height: 1.15 !important;
+    padding: 5px 10px !important;
+    min-height: 32px !important;
+    height: auto !important;
+    line-height: 1.25 !important;
     font-weight: 500 !important;
     border-radius: 8px !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
 }
 
 [data-testid="stSidebar"] .stSelectbox label,

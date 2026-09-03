@@ -213,33 +213,29 @@ def render_sidebar():
                 st.rerun()
 
         # --- Risk Management accordion ---
-        rm_col1, rm_col2 = st.columns([5, 1])
-        with rm_col1:
-            if st.button("Risk Management", key="nav_risk_mgmt", width='stretch'):
-                st.session_state.sidebar_risk_expanded = not st.session_state.sidebar_risk_expanded
-                st.rerun()
-        with rm_col2:
-            chev = ICONS['chevron_up'] if st.session_state.sidebar_risk_expanded else ICONS['chevron_down']
-            st.markdown(f'<div style="padding-top:8px;color:#8e95a5;">{chev}</div>', unsafe_allow_html=True)
+        is_rm_active = st.session_state.current_page == "risk_register"
+        rm_chev = "▴" if st.session_state.sidebar_risk_expanded else "▾"
+        if st.button(f"Risk Management  {rm_chev}", key="nav_risk_mgmt", width='stretch'):
+            st.session_state.sidebar_risk_expanded = not st.session_state.sidebar_risk_expanded
+            st.rerun()
         if st.session_state.sidebar_risk_expanded:
-            if st.button("Risk Register", key="nav_risk_register", width='stretch'):
+            btn_type = "primary" if is_rm_active else "secondary"
+            if st.button("  ↳ Risk Register", key="nav_risk_register", type=btn_type, width='stretch'):
                 st.session_state.current_page = "risk_register"
                 st.rerun()
 
         # --- Compliance accordion ---
-        comp_col1, comp_col2 = st.columns([5, 1])
-        with comp_col1:
-            if st.button("Compliance", key="nav_compliance", width='stretch'):
-                st.session_state.sidebar_compliance_expanded = not st.session_state.sidebar_compliance_expanded
-                st.rerun()
-        with comp_col2:
-            chev = ICONS['chevron_up'] if st.session_state.sidebar_compliance_expanded else ICONS['chevron_down']
-            st.markdown(f'<div style="padding-top:8px;color:#8e95a5;">{chev}</div>', unsafe_allow_html=True)
+        comp_chev = "▴" if st.session_state.sidebar_compliance_expanded else "▾"
+        if st.button(f"Compliance  {comp_chev}", key="nav_compliance", width='stretch'):
+            st.session_state.sidebar_compliance_expanded = not st.session_state.sidebar_compliance_expanded
+            st.rerun()
         if st.session_state.sidebar_compliance_expanded:
-            if st.button("Regulatory Requirements", key="nav_reg_req", width='stretch'):
+            is_reg = st.session_state.current_page == "regulatory_requirements"
+            if st.button("  ↳ Regulatory Requirements", key="nav_reg_req", type="primary" if is_reg else "secondary", width='stretch'):
                 st.session_state.current_page = "regulatory_requirements"
                 st.rerun()
-            if st.button("Controls & Assessments", key="nav_controls", width='stretch'):
+            is_ctrl = st.session_state.current_page == "controls_assessments"
+            if st.button("  ↳ Controls & Assessments", key="nav_controls", type="primary" if is_ctrl else "secondary", width='stretch'):
                 st.session_state.current_page = "controls_assessments"
                 st.rerun()
 
@@ -248,21 +244,19 @@ def render_sidebar():
             ("initiatives", "Initiatives Management", "sidebar_initiatives_expanded"),
             ("governance", "Governance", "sidebar_governance_expanded"),
             ("audit_mgmt", "Audit Management", "sidebar_audit_expanded"),
-            ("issues", "Issues and Exceptions", "sidebar_issues_expanded"),
-            ("users_mgmt", "User's Management", "sidebar_users_expanded"),
+            ("issues", "Issues & Exceptions", "sidebar_issues_expanded"),
+            ("users_mgmt", "User Management", "sidebar_users_expanded"),
             ("settings", "Settings", "sidebar_settings_expanded"),
             ("consultancy", "Consultancy", "sidebar_consultancy_expanded"),
         ]
         for key, label, state_key in accordion_items:
-            a_col1, a_col2 = st.columns([5, 1])
-            with a_col1:
-                if st.button(label, key=f"nav_{key}", width='stretch'):
-                    st.session_state[state_key] = not st.session_state[state_key]
-                    st.session_state.current_page = key
-                    st.rerun()
-            with a_col2:
-                chev = ICONS['chevron_up'] if st.session_state[state_key] else ICONS['chevron_down']
-                st.markdown(f'<div style="padding-top:8px;color:#8e95a5;">{chev}</div>', unsafe_allow_html=True)
+            is_active = st.session_state.current_page == key
+            chev = "▴" if st.session_state[state_key] else "▾"
+            btn_type = "primary" if is_active else "secondary"
+            if st.button(f"{label}  {chev}", key=f"nav_{key}", type=btn_type, width='stretch'):
+                st.session_state[state_key] = not st.session_state[state_key]
+                st.session_state.current_page = key
+                st.rerun()
 
         st.markdown("<hr style='margin:10px 0; border:0; height:1px; background:#eef2f6;'>", unsafe_allow_html=True)
 
