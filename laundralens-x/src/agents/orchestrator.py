@@ -383,6 +383,9 @@ class InvestigationOrchestrator:
                 "explanations": self._build_explanations(flow, temporal, behavior_result),
                 "lineage": self.lineage_data,
                 "label": "Investigation Priority Score",
+                "evidence": self.evidence,
+                "findings": self.findings,
+                "tool_log": self.tool_log,
                 "disclaimer": self.risk_result.get("disclaimer", ""),
             }
             return result

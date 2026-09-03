@@ -26,6 +26,8 @@ def get_case(case_id: str, db: Session = Depends(get_db)):
     ms = db.query(ModelScore).filter(ModelScore.case_id == case_id).first()
     findings = db.query(Finding).filter(Finding.case_id == case_id).all()
 
+    evidence_records = db.query(Evidence).filter(Evidence.case_id == case_id).all()
+
     return {
         "case_id": case_id,
         "account_id": inv.account_id,
@@ -40,6 +42,14 @@ def get_case(case_id: str, db: Session = Depends(get_db)):
             "title": f.title,
             "description": f.description,
         } for f in findings],
+        "evidence": [{
+            "evidence_id": e.evidence_id,
+            "evidence_type": e.evidence_type,
+            "source": e.source,
+            "calculation": e.calculation,
+            "description": e.description,
+            "data": e.data,
+        } for e in evidence_records],
         "report": cached.get("report"),
         "disclaimer": "All findings require human review. Synthetic data — not real financial data.",
     }
