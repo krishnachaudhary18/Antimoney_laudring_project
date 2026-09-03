@@ -37,7 +37,7 @@ API_BASE = "http://localhost:8000/api/v1"
 if "selected_case_id" not in st.session_state:
     st.session_state.selected_case_id = "CASE-DEMO-001"
 if "selected_alert_id" not in st.session_state:
-    st.session_state.selected_alert_id = "ALERT-DEMO-001"
+    st.session_state.selected_alert_id = "ALERT-SCENARIO-001"
 if "investigation_running" not in st.session_state:
     st.session_state.investigation_running = False
 if "investigation_data" not in st.session_state:
@@ -95,6 +95,11 @@ def render_sidebar():
             st.warning("No alerts loaded. Run the data pipeline first.")
             st.code("python scripts/seed_database.py", language="bash")
             return
+
+        # Fallback to first alert if selected_alert_id is not in list
+        valid_alert_ids = {a.get("alert_id") for a in alerts}
+        if st.session_state.selected_alert_id not in valid_alert_ids and alerts:
+            st.session_state.selected_alert_id = alerts[0].get("alert_id")
 
         # Group by risk band
         bands = {

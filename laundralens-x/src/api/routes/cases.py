@@ -89,7 +89,16 @@ def generate_report(case_id: str, db: Session = Depends(get_db)):
 
     report = generate_report_with_gemini(cached)
     if report:
+        if case_id not in _investigation_cache:
+            _investigation_cache[case_id] = cached
         _investigation_cache[case_id]["report"] = report
+
+        # Persist executive summary into Investigation record
+        inv = db.query(Investigation).filter(Investigation.case_id == case_id).first()
+        if inv and report.get("executive_summary"):
+            inv.summary = report.get("executive_summary")
+            db.commit()
+
         return {"case_id": case_id, "report": report}
     else:
         raise HTTPException(status_code=500, detail="Report generation failed")

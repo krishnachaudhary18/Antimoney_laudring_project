@@ -53,11 +53,14 @@ def compute_flow_features(
     outflow_total = float(outflows["amount"].sum())
     net_flow = inflow_total - outflow_total
 
-    # Conservation ratio (primary signal)
-    conservation_ratio = outflow_total / (inflow_total + EPSILON)
+    # Conservation ratio: fraction of received funds sent onward (bounded [0, 1])
+    if inflow_total > 0:
+        conservation_ratio = min(outflow_total / inflow_total, 1.0)
+    else:
+        conservation_ratio = 0.0
 
     # Redistribution ratio: how much of inflow was immediately redistributed
-    redistribution_ratio = min(conservation_ratio, 1.0)
+    redistribution_ratio = conservation_ratio
 
     # --- Recipient analysis ---
     # Historical counterparties (before alert window)
@@ -129,7 +132,7 @@ def compute_flow_features(
     # High conservation ratio + new recipients + fast redistribution = high flow signal
     conservation_signal = min(conservation_ratio, 1.0)
     new_recipient_signal = float(new_recipient_ratio)
-    downstream_signal = min(downstream_amount / (inflow_total + EPSILON), 1.0)
+    downstream_signal = min(downstream_amount / inflow_total, 1.0) if inflow_total > 0 else (min(downstream_amount / (outflow_total + EPSILON), 1.0) if outflow_total > 0 else 0.0)
 
     flow_signal = float(np.clip(
         0.45 * conservation_signal +
@@ -138,12 +141,14 @@ def compute_flow_features(
         0.0, 1.0
     ))
 
+    inflow_outflow_ratio = round(inflow_total / outflow_total, 4) if outflow_total > 0 else (round(inflow_total, 4) if inflow_total > 0 else 1.0)
+
     return {
         "account_id": account_id,
         # Primary signals
         "conservation_ratio": round(conservation_ratio, 4),
         "redistribution_ratio": round(redistribution_ratio, 4),
-        "inflow_outflow_ratio": round(inflow_total / (outflow_total + EPSILON), 4),
+        "inflow_outflow_ratio": inflow_outflow_ratio,
         # Volume
         "inflow_total_24h": round(inflow_total, 2),
         "outflow_total_24h": round(outflow_total, 2),

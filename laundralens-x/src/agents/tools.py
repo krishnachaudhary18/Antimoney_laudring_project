@@ -171,10 +171,27 @@ def build_subgraph(account_id: str, hops: int, G: nx.DiGraph) -> Dict:
     return expand_k_hop(G, account_id, hops)
 
 
-def expand_k_hop_tool(account_id: str, hops: int, G: nx.DiGraph) -> Dict:
-    """Tool: expand_k_hop — expand graph neighborhood."""
-    from src.graph.traversal import expand_k_hop
-    return expand_k_hop(G, account_id, hops)
+def detect_syndicate_rings_tool(account_id: str, G: nx.DiGraph) -> Dict:
+    """Tool: detect_syndicate_rings — detects coordinated cycles, hubs, and mule rings involving the target entity."""
+    from src.graph.syndicate import SyndicateForensics
+    synd_results = SyndicateForensics.detect_syndicate_patterns(G)
+    account_cycles = [
+        c for c in synd_results.get("round_tripping_cycles", [])
+        if account_id in c.get("ring_accounts", [])
+    ]
+    account_hubs = [
+        h for h in synd_results.get("hub_bridges", [])
+        if h.get("hub_account") == account_id or account_id in h.get("connected_accounts", [])
+    ]
+    return {
+        "account_id": account_id,
+        "is_ring_member": len(account_cycles) > 0,
+        "is_hub_bridge": len(account_hubs) > 0,
+        "matching_cycles": account_cycles,
+        "matching_hubs": account_hubs,
+        "syndicate_risk_score": synd_results.get("syndicate_risk_score", 0.0),
+        "total_ring_exposure_inr": synd_results.get("total_ring_exposure_inr", 0.0),
+    }
 
 
 def find_paths_tool(source: str, target: str, max_depth: int, G: nx.DiGraph) -> Dict:

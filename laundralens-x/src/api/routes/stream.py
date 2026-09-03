@@ -46,9 +46,41 @@ async def stream_live_transactions():
     )
 
 
+def populate_buffer_sample(count: int = 10):
+    """Seed buffer with immediate realistic transactions if empty."""
+    import random, uuid
+    from datetime import datetime, timedelta
+    now = datetime.utcnow()
+    channels = ["UPI", "IMPS", "NEFT", "RTGS"]
+    locations = ["Mumbai", "Bengaluru", "Delhi", "Hyderabad", "Pune"]
+    for i in range(count):
+        is_ano = (i == 2)
+        amount = round(random.uniform(500000.0, 1800000.0), 2) if is_ano else round(random.uniform(250.0, 15000.0), 2)
+        sender = "ACC-B-001" if is_ano else f"ACC-{random.randint(100, 400):04d}"
+        receiver = f"ACC-C-{i:03d}" if is_ano else f"ACC-{random.randint(100, 400):04d}"
+        t_time = now - timedelta(seconds=(count - i) * 12)
+        _recent_buffer.appendleft({
+            "sequence": i + 1,
+            "transaction_id": f"LIVE-TX-{uuid.uuid4().hex[:8].upper()}",
+            "timestamp": t_time.isoformat(),
+            "time_str": t_time.strftime("%H:%M:%S"),
+            "sender_account_id": sender,
+            "receiver_account_id": receiver,
+            "amount": amount,
+            "amount_formatted": f"₹{amount:,.2f}",
+            "currency": "INR",
+            "channel": "RTGS" if amount > 500000 else random.choice(channels),
+            "location": random.choice(locations),
+            "is_anomalous": is_ano,
+            "anomaly_flag": "HIGH_VALUE_VELOCITY_SPIKE" if is_ano else "NORMAL",
+        })
+
+
 @router.get("/recent")
 def get_recent_streamed_events(limit: int = 15):
     """Returns the most recent live transactions from the sliding-window buffer."""
+    if not _recent_buffer:
+        populate_buffer_sample(10)
     events = list(_recent_buffer)[:limit]
     return {
         "count": len(events),

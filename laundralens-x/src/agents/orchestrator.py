@@ -64,7 +64,8 @@ class InvestigationOrchestrator:
         self.lineage_data: Dict = {}
         self.graph: Optional[nx.DiGraph] = None
         self.transactions_df: Optional[pd.DataFrame] = None
-        self.alert_timestamp = datetime(2026, 8, 14, 11, 30, 0)
+        self.alert_timestamp: Optional[datetime] = None
+        self.planner = AdaptivePlanner()
         self.progress_steps: List[Dict] = []
 
     def _log_tool(self, tool_name: str, args: Dict, result_summary: str, duration_ms: int = 0):
@@ -145,6 +146,27 @@ class InvestigationOrchestrator:
             # Load transactions DataFrame (once, cached)
             self.transactions_df = self._load_transactions_df(db)
 
+            # Resolve alert timestamp dynamically
+            alert_obj = db.query(Alert).filter(Alert.alert_id == self.alert_id).first()
+            if alert_obj and alert_obj.created_at:
+                self.alert_timestamp = alert_obj.created_at
+            elif not self.transactions_df.empty:
+                acc_txs = self.transactions_df[
+                    (self.transactions_df["sender_account_id"] == self.account_id) |
+                    (self.transactions_df["receiver_account_id"] == self.account_id)
+                ]
+                if not acc_txs.empty:
+                    self.alert_timestamp = acc_txs["timestamp"].max()
+                else:
+                    self.alert_timestamp = datetime(2026, 8, 14, 11, 30, 0)
+            else:
+                self.alert_timestamp = datetime(2026, 8, 14, 11, 30, 0)
+
+            # Formulate adaptive initial plan
+            init_plan = self.planner.evaluate_initial_plan(profile, alert_obj.summary if alert_obj else "")
+            self._log_tool("evaluate_initial_plan", {"account_id": self.account_id},
+                           f"Hypotheses: {'; '.join(init_plan['hypotheses']) if init_plan['hypotheses'] else 'Standard investigation'}")
+
             # ── STEP 3: Temporal Analysis ────────────────────────
             self._update_state(db, "TEMPORAL_ANALYSIS_COMPLETE")
             temporal = T.analyze_time_windows(self.account_id, self.transactions_df, self.alert_timestamp)
@@ -213,49 +235,78 @@ class InvestigationOrchestrator:
             # ── STEP 6: Graph Analysis ───────────────────────────
             self._update_state(db, "GRAPH_ANALYSIS_COMPLETE")
             self.graph = build_full_graph(self.transactions_df, alert_timestamp=self.alert_timestamp)
-            subgraph = T.build_subgraph(self.account_id, 2, self.graph)
             from src.features.network import compute_network_features
             net_features = compute_network_features(self.account_id, self.graph)
             self.signals["graph"] = float(net_features.get("graph_signal", 0.0))
-            self._log_tool("build_subgraph", {"account_id": self.account_id, "hops": 2},
-                           f"graph_signal={self.signals['graph']:.3f} | "
-                           f"fan_out={net_features.get('fan_out', 0)} | "
-                           f"fan_in={net_features.get('fan_in', 0)}")
+            fan_out = net_features.get("fan_out", 0)
+            fan_in = net_features.get("fan_in", 0)
+
+            # Adaptive planning: dynamically determine graph expansion radius
+            hops = self.planner.determine_graph_expansion(fan_out, new_ratio)
+            subgraph = T.build_subgraph(self.account_id, hops, self.graph)
+            self._log_tool("build_subgraph", {"account_id": self.account_id, "hops": hops},
+                           f"graph_signal={self.signals['graph']:.3f} | fan_out={fan_out} | fan_in={fan_in}")
 
             if self.signals["graph"] > 0.4:
-                fan_out = net_features.get("fan_out", 0)
                 self._add_finding(
                     "graph", "HIGH",
                     "Hub-Like Network Behavior",
                     f"Account shows hub-like transaction pattern: "
                     f"fan-out={fan_out} unique recipients, "
-                    f"fan-in={net_features.get('fan_in', 0)} unique senders. "
+                    f"fan-in={fan_in} unique senders. "
                     f"Betweenness centrality: {net_features.get('betweenness_centrality', 0):.3f}.",
                     calculation=f"graph_signal = {self.signals['graph']:.3f} | fan_out = {fan_out}",
                     data=net_features,
                 )
 
+            # Adaptive planning: scan for multi-account syndicate rings and circular round-tripping
+            if self.planner.should_scan_syndicates(self.signals["graph"], fan_in, fan_out):
+                synd_res = T.detect_syndicate_rings_tool(self.account_id, self.graph)
+                self._log_tool("detect_syndicate_rings", {"account_id": self.account_id},
+                               f"is_ring={synd_res['is_ring_member']} | is_hub={synd_res['is_hub_bridge']} | risk={synd_res['syndicate_risk_score']}")
+                if synd_res["is_ring_member"] or synd_res["is_hub_bridge"]:
+                    self._add_finding(
+                        "syndicate", "CRITICAL" if synd_res["is_ring_member"] else "HIGH",
+                        "Coordinated Mule Ring / Transit Hub Topology",
+                        f"Entity is linked to coordinated network structures: "
+                        f"{len(synd_res['matching_cycles'])} circular round-tripping cycle(s), "
+                        f"{len(synd_res['matching_hubs'])} transit hub structure(s). "
+                        f"Total ring exposure: Rs {synd_res['total_ring_exposure_inr']:,.0f}.",
+                        calculation=f"syndicate_risk_score = {synd_res['syndicate_risk_score']:.1f}",
+                        data=synd_res,
+                    )
+
             # ── STEP 7: Lineage Tracing ──────────────────────────
             self._update_state(db, "LINEAGE_ANALYSIS_COMPLETE")
-            # Use the first inflow transaction for demo scenario
-            demo_txn = "TXN-DEMO-S001-001"
-            self.lineage_data = T.trace_potential_lineage_tool(demo_txn, 3, self.transactions_df)
-            lineage_strength = self.lineage_data.get("lineage_strength", 0.0)
-            n_downstream = len(self.lineage_data.get("candidate_downstream_transactions", []))
-            self._log_tool("trace_potential_lineage", {"transaction_id": demo_txn, "depth": 3},
-                           f"lineage_strength={lineage_strength:.3f} | {n_downstream} downstream candidates")
+            lineage_roots = self.planner.select_lineage_roots(self.account_id, self.transactions_df, self.alert_timestamp)
+            if lineage_roots:
+                root_txn = lineage_roots[0]
+                self.lineage_data = T.trace_potential_lineage_tool(root_txn, 3, self.transactions_df)
+                lineage_strength = self.lineage_data.get("lineage_strength", 0.0)
+                n_downstream = len(self.lineage_data.get("candidate_downstream_transactions", []))
+                self._log_tool("trace_potential_lineage", {"transaction_id": root_txn, "depth": 3},
+                               f"lineage_strength={lineage_strength:.3f} | {n_downstream} downstream candidates")
 
-            if n_downstream > 0:
-                self._add_finding(
-                    "lineage", "HIGH",
-                    "Potential Downstream Fund Movement",
-                    f"Heuristic analysis identified {n_downstream} candidate downstream transaction(s) "
-                    f"with lineage strength {lineage_strength:.2f}. "
-                    f"Based on temporal proximity and amount relationships. "
-                    f"Type: potential_downstream_lineage (not confirmed).",
-                    calculation=f"lineage_strength = {lineage_strength:.3f}",
-                    data=self.lineage_data,
-                )
+                if n_downstream > 0:
+                    self._add_finding(
+                        "lineage", "HIGH",
+                        "Potential Downstream Fund Movement",
+                        f"Heuristic analysis identified {n_downstream} candidate downstream transaction(s) "
+                        f"with lineage strength {lineage_strength:.2f}. "
+                        f"Based on temporal proximity and amount relationships. "
+                        f"Type: potential_downstream_lineage (not confirmed).",
+                        calculation=f"lineage_strength = {lineage_strength:.3f}",
+                        data=self.lineage_data,
+                    )
+            else:
+                self.lineage_data = {
+                    "origin_transaction": None,
+                    "candidate_downstream_transactions": [],
+                    "depth": 0,
+                    "lineage_strength": 0.0,
+                    "reason": "No qualifying inflow transactions found within observation horizon.",
+                    "lineage_type": "potential_downstream_lineage",
+                }
 
             # ── STEP 8: Model Scores ─────────────────────────────
             self._update_state(db, "MODEL_ANALYSIS_COMPLETE")
@@ -450,13 +501,12 @@ class InvestigationOrchestrator:
         temporal_signal = self.signals.get("temporal", 0.0)
         if temporal_signal > 0.3:
             time_90 = temporal.get("time_to_90pct_outflow_minutes")
+            time_desc = f"90% of incoming funds were redistributed within {time_90} minutes." if time_90 is not None else "Compressed outflow timing observed."
             explanations.append({
                 "signal": "Temporal Signal",
                 "value": round(temporal_signal, 3),
                 "description": (
-                    f"90% of incoming funds were redistributed within "
-                    f"{time_90} minutes. "
-                    f"Rapid redistribution is a key investigation signal."
+                    f"{time_desc} Rapid redistribution is a key investigation signal."
                 ),
             })
         behavior_signal = self.signals.get("behavior", 0.0)

@@ -110,11 +110,25 @@ def get_investigation(case_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/timeline")
-def get_timeline(case_id: str):
+def get_timeline(case_id: str, db: Session = Depends(get_db)):
     """Get investigation timeline events."""
     cached = _investigation_cache.get(case_id, {})
     timeline = cached.get("timeline", {})
-    return timeline if timeline else {"case_id": case_id, "events": [], "count": 0}
+    if timeline and timeline.get("events"):
+        return timeline
+
+    # Fallback: reconstruct from database
+    inv = db.query(Investigation).filter(Investigation.case_id == case_id).first()
+    if not inv:
+        return {"case_id": case_id, "events": [], "count": 0}
+
+    from src.agents import tools as T
+    from src.agents.orchestrator import InvestigationOrchestrator
+    orch = InvestigationOrchestrator(case_id, inv.alert_id or "", inv.account_id)
+    txs_df = orch._load_transactions_df(db)
+    alert_ts = inv.created_at or datetime(2026, 8, 14, 11, 30, 0)
+    reconstructed = T.create_timeline(case_id, inv.account_id, txs_df, alert_ts)
+    return reconstructed
 
 
 @router.get("/{case_id}/evidence")
@@ -138,23 +152,78 @@ def get_evidence(case_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/explanations")
-def get_explanations(case_id: str):
+def get_explanations(case_id: str, db: Session = Depends(get_db)):
     """Get WHY explanations (SHAP + signal breakdown)."""
     cached = _investigation_cache.get(case_id, {})
+    if cached.get("explanations") or cached.get("shap_contributions"):
+        return {
+            "case_id": case_id,
+            "explanations": cached.get("explanations", []),
+            "shap_contributions": cached.get("shap_contributions", {}),
+        }
+
+    # Fallback: reconstruct from ModelScore
+    ms = db.query(ModelScore).filter(ModelScore.case_id == case_id).first()
+    shap_vals = ms.shap_values if ms and ms.shap_values else {}
+    explanations = []
+    if ms:
+        if ms.flow_signal and ms.flow_signal > 0.5:
+            explanations.append({
+                "signal": "Flow Signal",
+                "value": round(ms.flow_signal, 3),
+                "description": f"Elevated fund redistribution ({int(ms.flow_signal*100)}% signal strength) observed within observation horizon."
+            })
+        if ms.temporal_signal and ms.temporal_signal > 0.3:
+            explanations.append({
+                "signal": "Temporal Signal",
+                "value": round(ms.temporal_signal, 3),
+                "description": f"High velocity transaction bursts ({int(ms.temporal_signal*100)}% signal strength) detected."
+            })
+        if ms.behavior_signal and ms.behavior_signal > 0.3:
+            explanations.append({
+                "signal": "Behavioral Signal",
+                "value": round(ms.behavior_signal, 3),
+                "description": f"Substantial deviation from baseline ({int(ms.behavior_signal*100)}% signal strength)."
+            })
+
     return {
         "case_id": case_id,
-        "explanations": cached.get("explanations", []),
-        "shap_contributions": cached.get("shap_contributions", {}),
+        "explanations": explanations,
+        "shap_contributions": shap_vals,
     }
 
 
 @router.get("/{case_id}/counterfactual")
-def get_counterfactual(case_id: str):
+def get_counterfactual(case_id: str, db: Session = Depends(get_db)):
     """Get score sensitivity / WHAT-IF analysis."""
     cached = _investigation_cache.get(case_id, {})
+    if cached.get("counterfactual"):
+        return {
+            "case_id": case_id,
+            "sensitivity": cached.get("counterfactual", {}),
+            "label": "Score sensitivity",
+            "disclaimer": "Shows signal contribution. Does not establish causation.",
+        }
+
+    # Fallback: check ModelScore table
+    ms = db.query(ModelScore).filter(ModelScore.case_id == case_id).first()
+    sensitivity = ms.counterfactual if ms and ms.counterfactual else {}
+    if not sensitivity and ms:
+        from src.risk.scorer import compute_counterfactual
+        signals = {
+            "flow": ms.flow_signal or 0.0,
+            "temporal": ms.temporal_signal or 0.0,
+            "behavior": ms.behavior_signal or 0.0,
+            "graph": ms.graph_signal or 0.0,
+            "xgboost": ms.xgboost_score or 0.5,
+            "isolation_forest": ms.isolation_score or 0.5,
+            "autoencoder": ms.autoencoder_score or 0.5,
+        }
+        sensitivity = compute_counterfactual(signals, ms.final_score or 50.0)
+
     return {
         "case_id": case_id,
-        "sensitivity": cached.get("counterfactual", {}),
+        "sensitivity": sensitivity,
         "label": "Score sensitivity",
         "disclaimer": "Shows signal contribution. Does not establish causation.",
     }

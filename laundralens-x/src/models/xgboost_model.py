@@ -52,10 +52,10 @@ class XGBoostDetector:
         """
         self.feature_names = feature_names
 
-        # Time-aware split (last 20% as test — no future leakage)
-        split_idx = int(len(X) * (1 - test_size))
-        X_train, X_test = X[:split_idx], X[split_idx:]
-        y_train, y_test = y[:split_idx], y[split_idx:]
+        # Stratified train/test split to ensure realistic evaluation on both classes
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=random_state, stratify=y
+        )
 
         # Scale
         self.scaler = StandardScaler()

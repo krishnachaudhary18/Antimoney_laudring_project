@@ -55,3 +55,23 @@ def test_network_features(sample_txs):
     features = compute_network_features("ACC-B", G)
     assert features["in_graph"] is True
     assert features["out_degree"] >= 2
+
+
+def test_flow_features_zero_inflow(sample_txs):
+    """Verify that an account with 0 inflow and positive outflow does not produce division-by-zero overflow."""
+    alert_time = datetime(2026, 8, 14, 11, 0, 0)
+    # ACC-A only has outgoing in the window
+    flow = compute_flow_features("ACC-A", sample_txs, alert_time)
+    assert flow["inflow_total_24h"] == 0.0
+    assert flow["outflow_total_24h"] == 1000000.0
+    assert flow["conservation_ratio"] == 0.0  # Must not be 1e12!
+    assert 0.0 <= flow["flow_signal"] <= 1.0
+
+
+def test_flow_features_zero_transactions():
+    """Verify empty transactions return clean zero signals."""
+    alert_time = datetime(2026, 8, 14, 11, 0, 0)
+    empty_df = pd.DataFrame(columns=["transaction_id", "timestamp", "sender_account_id", "receiver_account_id", "amount"])
+    flow = compute_flow_features("ACC-EMPTY", empty_df, alert_time)
+    assert flow["conservation_ratio"] == 0.0
+    assert flow["flow_signal"] == 0.0

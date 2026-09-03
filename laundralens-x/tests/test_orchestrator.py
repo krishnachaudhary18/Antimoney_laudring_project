@@ -20,3 +20,21 @@ def test_orchestrator_execution():
     assert "timeline" in result
     assert "counterfactual" in result
     assert result["label"] == "Investigation Priority Score"
+
+
+def test_orchestrator_multi_scenario():
+    """Verify that orchestrator does not hardcode TXN-DEMO-S001-001 on Scenario 2."""
+    orchestrator = InvestigationOrchestrator(
+        case_id="TEST-CASE-002",
+        alert_id="ALERT-SCENARIO-002",
+        account_id="ACC-0104",
+    )
+    result = orchestrator.run()
+
+    assert result["status"] == "REPORT_READY"
+    assert result["account_id"] == "ACC-0104"
+    assert "signals" in result
+
+    # Lineage must not be hardcoded to Scenario 1's transaction
+    lineage = result.get("lineage", {})
+    assert lineage.get("origin_transaction") != "TXN-DEMO-S001-001"
