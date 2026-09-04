@@ -573,11 +573,11 @@
     "generated_by": "deterministic_fallback",
     "disclaimer": "Evidence-grounded generation: Factual claims are generated from structured investigation evidence. LLM-generated summaries are constrained to retrieved evidence and remain subject to human review. Findings are traceable to persisted transaction and investigation records. Synthetic data \u2014 not real financial data."
   },
-  "duration_seconds": 2.0,
+  "duration_seconds": 5.3,
   "feature_version": "1.0.0",
   "model_version": "1.0.0",
   "random_seed": 42,
-  "generated_at": "2026-09-04T00:23:56.582464+00:00",
+  "generated_at": "2026-09-04T00:41:26.775686+00:00",
   "priority_score": 75.8,
   "signals": {
     "temporal": 0.5871,
