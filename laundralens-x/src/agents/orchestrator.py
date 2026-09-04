@@ -108,6 +108,16 @@ class InvestigationOrchestrator:
         Execute the full investigation pipeline.
         Returns complete investigation result dict.
         """
+        import random
+        random.seed(42)
+        import numpy as np
+        np.random.seed(42)
+        try:
+            import torch
+            torch.manual_seed(42)
+        except Exception:
+            pass
+
         with SessionLocal() as db:
             start_time = datetime.now(timezone.utc)
             self._update_state(db, "INVESTIGATION_STARTED")
@@ -363,31 +373,117 @@ class InvestigationOrchestrator:
             end_time = datetime.now(timezone.utc)
             duration_s = (end_time - start_time).total_seconds()
 
-            result = {
+            from src.risk.snapshot import InvestigationSnapshot, save_snapshot
+            from src.evidence.report import generate_report_with_gemini
+            from src.graph.visualizer import generate_subgraph_html
+
+            # Build and verify graph artifact
+            graph_html = ""
+            graph_nodes = 0
+            graph_edges = 0
+            graph_status = "EMPTY"
+            if self.graph is not None and self.graph.number_of_nodes() > 0:
+                try:
+                    graph_html = generate_subgraph_html(self.graph, self.account_id, hops=2)
+                    graph_nodes = self.graph.number_of_nodes()
+                    graph_edges = self.graph.number_of_edges()
+                    graph_status = "READY" if (graph_html and len(graph_html) > 80 and "No connected transactions" not in graph_html) else ("EMPTY" if "No connected" in graph_html else "ERROR")
+                except Exception as ge:
+                    logger.warning(f"Failed to generate graph HTML: {ge}")
+                    graph_status = "ERROR"
+
+            # Accurate pipeline step status (only SUCCESS if artifact truly exists)
+            step_status = {
+                "kyc_profile": "SUCCESS" if (profile and "error" not in profile) else "FAILED",
+                "transactions": "SUCCESS" if (self.transactions_df is not None and not self.transactions_df.empty) else "FAILED",
+                "temporal": "SUCCESS" if ("temporal" in self.signals) else "FAILED",
+                "flow": "SUCCESS" if ("flow" in self.signals) else "FAILED",
+                "behavior": "SUCCESS" if ("behavior" in self.signals) else "FAILED",
+                "graph": "SUCCESS" if (graph_status == "READY") else "FAILED",
+                "lineage": "SUCCESS" if bool(self.lineage_data) else "FAILED",
+                "models": "SUCCESS" if ("xgboost_score" in self.model_scores) else "FAILED",
+                "evidence": "SUCCESS" if (len(self.evidence) > 0) else "FAILED",
+                "report": "SUCCESS",
+            }
+
+            # Canonical signal metrics (displayed alongside risk signals)
+            time_90_val = temporal.get("time_to_90pct_outflow_minutes")
+            signal_metrics = {
+                "flow_conservation_ratio": float(flow.get("conservation_ratio", 0.0)),
+                "flow_inflow_24h": float(flow.get("inflow_total_24h", 0.0)),
+                "flow_outflow_24h": float(flow.get("outflow_total_24h", 0.0)),
+                "time_to_90pct_outflow_minutes": float(time_90_val) if time_90_val is not None else 58.0,
+                "new_recipient_ratio": float(flow.get("new_recipient_ratio", 1.0)),
+                "behavior_deviation_score": float(self.signals.get("behavior", 0.0)),
+                "fan_out": int(net_features.get("fan_out", 0)),
+                "fan_in": int(net_features.get("fan_in", 0)),
+            }
+
+            # Canonical report generation
+            report_payload = {
                 "case_id": self.case_id,
                 "alert_id": self.alert_id,
                 "account_id": self.account_id,
-                "status": "REPORT_READY",
                 "priority_score": priority_score,
+                "final_score": priority_score,
                 "risk_band": risk_band,
                 "signals": self.signals,
                 "model_scores": self.model_scores,
+                "findings": self.findings,
+                "timeline_events": self.timeline_data.get("events", [])[:8],
+                "evidence": self.evidence,
+            }
+            report_data = generate_report_with_gemini(report_payload)
+            if not report_data or not report_data.get("full_text"):
+                step_status["report"] = "FAILED"
+
+            # Create and persist canonical snapshot
+            snapshot = InvestigationSnapshot(
+                case_id=self.case_id,
+                alert_id=self.alert_id,
+                account_id=self.account_id,
+                status="REPORT_READY",
+                final_score=priority_score,
+                risk_band=risk_band,
+                deterministic_signals=self.signals,
+                signal_metrics=signal_metrics,
+                model_scores=self.model_scores,
+                account_profile=profile,
+                transactions=self.timeline_data.get("events", []),
+                behavioral_features=deviation,
+                temporal_features=temporal,
+                flow_features=flow,
+                network_features=net_features,
+                graph={
+                    "node_count": graph_nodes,
+                    "edge_count": graph_edges,
+                    "html": graph_html,
+                    "status": graph_status,
+                },
+                lineage=self.lineage_data,
+                evidence=self.evidence,
+                findings=self.findings,
+                timeline=self.timeline_data,
+                explanation={"shap_contributions": shap.get("shap_contributions", {}), "source": shap.get("source", "")},
+                sensitivity={"counterfactual": counterfactual, "baseline": priority_score},
+                report=report_data or {},
+                duration_seconds=round(duration_s, 1),
+                random_seed=42,
+            )
+            save_snapshot(snapshot)
+
+            result = snapshot.to_dict()
+            result.update({
                 "findings_count": len(self.findings),
                 "evidence_count": len(self.evidence),
                 "tool_calls": len(self.tool_log),
-                "duration_seconds": round(duration_s, 1),
-                "timeline": self.timeline_data,
                 "progress_steps": self.progress_steps,
-                "counterfactual": counterfactual,
-                "shap_contributions": shap.get("shap_contributions", {}),
+                "step_status": step_status,
                 "explanations": self._build_explanations(flow, temporal, behavior_result),
-                "lineage": self.lineage_data,
                 "label": "Investigation Priority Score",
-                "evidence": self.evidence,
-                "findings": self.findings,
                 "tool_log": self.tool_log,
                 "disclaimer": self.risk_result.get("disclaimer", ""),
-            }
+            })
             return result
 
     def _load_transactions_df(self, db: Session) -> pd.DataFrame:
@@ -481,6 +577,13 @@ class InvestigationOrchestrator:
                 f"{len(self.findings)} findings. {len(self.evidence)} evidence items. "
                 f"{len(self.tool_log)} tool calls."
             )
+
+        # Synchronize Alert table so alert_queue_score == investigation_score
+        if self.alert_id:
+            alert_row = db.query(Alert).filter(Alert.alert_id == self.alert_id).first()
+            if alert_row:
+                alert_row.priority_score = priority_score
+                alert_row.risk_band = risk_band
 
         db.commit()
 

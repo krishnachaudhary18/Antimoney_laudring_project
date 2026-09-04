@@ -129,3 +129,10 @@ def compute_counterfactual(
         sensitivity[f"without_{signal_name}"] = new_score
 
     return sensitivity
+
+
+def get_weights_description() -> str:
+    """Get human-readable summary of the active risk fusion weights."""
+    weights = load_weights()
+    parts = [f"{k.replace('_', ' ').title()} ({v*100:.0f}%)" for k, v in weights.items()]
+    return ", ".join(parts)

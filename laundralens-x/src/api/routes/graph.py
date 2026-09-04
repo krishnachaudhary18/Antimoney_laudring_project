@@ -62,17 +62,18 @@ def visualize_syndicates(db: Session = Depends(get_db)):
 @router.get("/{account_id}")
 def get_account_graph(
     account_id: str,
-    hops: int = Query(default=2, ge=1, le=3),
+    hops: int = Query(default=1, ge=1, le=3),
+    mode: str = Query(default="investigation", pattern="^(investigation|full)$"),
     db: Session = Depends(get_db),
 ):
-    """Get Pyvis HTML subgraph for an account."""
+    """Get Pyvis HTML subgraph for an account (investigation or full network view)."""
     global _graph_cache
-    cache_key = f"subgraph_{account_id}_{hops}"
+    cache_key = f"subgraph_{account_id}_{hops}_{mode}"
     if cache_key not in _graph_cache:
         from src.graph.visualizer import generate_subgraph_html
         G = _get_or_build_graph(db)
-        html = generate_subgraph_html(G, account_id, hops=hops)
-        _graph_cache[cache_key] = {"account_id": account_id, "hops": hops, "html": html}
+        html = generate_subgraph_html(G, account_id, hops=hops, mode=mode)
+        _graph_cache[cache_key] = {"account_id": account_id, "hops": hops, "mode": mode, "html": html}
     return _graph_cache[cache_key]
 
 

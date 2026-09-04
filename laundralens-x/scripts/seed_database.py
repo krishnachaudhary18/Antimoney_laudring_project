@@ -171,25 +171,34 @@ def create_alerts(db: Session, gt_df: pd.DataFrame):
 
 
 def create_demo_investigation(db: Session, alert_id_map: dict):
-    """Create the primary demo investigation record."""
+    """Create and pre-compute the primary demo investigation and canonical snapshot."""
     DEMO_CASE_ID = "CASE-DEMO-001"
-    existing = db.query(Investigation).filter(Investigation.case_id == DEMO_CASE_ID).first()
-    if existing:
-        print("   ℹ  Demo investigation already exists")
-        return
-
     alert_id = alert_id_map.get("SCENARIO-001", "ALERT-SCENARIO-001")
-    inv = Investigation(
-        case_id=DEMO_CASE_ID,
-        alert_id=alert_id,
-        account_id="ACC-B-001",
-        status="ALERT_CREATED",
-        agent_version="1.0.0",
-        created_at=datetime(2026, 8, 14, 11, 30, 0),
-    )
-    db.add(inv)
-    db.commit()
-    print(f"   ✅ Demo investigation {DEMO_CASE_ID} created")
+
+    from src.agents.orchestrator import InvestigationOrchestrator
+    try:
+        print(f"   ⚙  Pre-computing canonical investigation for {DEMO_CASE_ID}...")
+        orch = InvestigationOrchestrator(
+            case_id=DEMO_CASE_ID,
+            alert_id=alert_id,
+            account_id="ACC-B-001",
+        )
+        res = orch.run()
+        print(f"   ✅ Canonical demo investigation {DEMO_CASE_ID} ready (Score: {res.get('final_score'):.1f} [{res.get('risk_band')}])")
+    except Exception as e:
+        print(f"   ⚠️  Pre-computation failed ({e}), creating stub investigation")
+        inv = db.query(Investigation).filter(Investigation.case_id == DEMO_CASE_ID).first()
+        if not inv:
+            inv = Investigation(
+                case_id=DEMO_CASE_ID,
+                alert_id=alert_id,
+                account_id="ACC-B-001",
+                status="ALERT_CREATED",
+                agent_version="1.0.0",
+                created_at=datetime(2026, 8, 14, 11, 30, 0),
+            )
+            db.add(inv)
+            db.commit()
 
 
 def main():

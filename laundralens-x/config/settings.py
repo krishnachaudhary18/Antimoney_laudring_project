@@ -63,3 +63,18 @@ class Settings(BaseSettings):
 
 # Singleton instance
 settings = Settings()
+
+
+class RuntimeConfig:
+    """Unified runtime configuration consumed across dashboard and backend services."""
+    def __init__(self):
+        self.api_base: str = f"http://{settings.api_host if settings.api_host != '0.0.0.0' else 'localhost'}:{settings.api_port}/api/v1"
+        self.default_hops: int = 1
+        self.default_graph_mode: str = "investigation"
+        self.demo_mode: bool = settings.demo_mode
+        self.demo_case_id: str = settings.demo_case_id
+        self.model_version: str = "1.0.0"
+        self.feature_version: str = "1.0.0"
+
+
+runtime_config = RuntimeConfig()

@@ -155,8 +155,8 @@ def calculate_conservation(account_id: str, window: str, transactions_df: pd.Dat
 def calculate_behavior_deviation(account_id: str, transactions_df: pd.DataFrame, alert_ts: datetime) -> Dict:
     """Tool: calculate_behavior_deviation — behavioral baseline deviation."""
     from src.features.behavioral import compute_behavioral_baseline, compute_current_deviation
-    baseline = compute_behavioral_baseline(account_id, transactions_df, alert_ts)
     window_start = alert_ts - timedelta(hours=24)
+    baseline = compute_behavioral_baseline(account_id, transactions_df, window_start)
     current = transactions_df[
         (transactions_df["timestamp"] >= window_start) &
         (transactions_df["timestamp"] <= alert_ts)

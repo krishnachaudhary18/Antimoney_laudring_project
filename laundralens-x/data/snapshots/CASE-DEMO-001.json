@@ -1,0 +1,615 @@
+{
+  "case_id": "CASE-DEMO-001",
+  "alert_id": "ALERT-SCENARIO-001",
+  "account_id": "ACC-B-001",
+  "status": "REPORT_READY",
+  "final_score": 75.8,
+  "risk_band": "HIGH",
+  "deterministic_signals": {
+    "temporal": 0.5871,
+    "flow": 0.8145,
+    "behavior": 0.85,
+    "graph": 0.1475
+  },
+  "signal_metrics": {
+    "flow_conservation_ratio": 0.97,
+    "flow_inflow_24h": 1000000.0,
+    "flow_outflow_24h": 970000.0,
+    "time_to_90pct_outflow_minutes": 58.0,
+    "new_recipient_ratio": 1.0,
+    "behavior_deviation_score": 0.85,
+    "fan_out": 4,
+    "fan_in": 1
+  },
+  "model_scores": {
+    "xgboost_score": 0.9927,
+    "isolation_score": 1.0,
+    "autoencoder_score": 1.0
+  },
+  "account_profile": {
+    "account_id": "ACC-B-001",
+    "customer_id": "CUST-B-001",
+    "account_type": "current",
+    "segment": "retail",
+    "risk_profile": "low",
+    "status": "active",
+    "home_region": "Mumbai",
+    "creation_date": "2026-04-19T12:00:00",
+    "is_synthetic_suspicious": true,
+    "scenario_id": "SCENARIO-001"
+  },
+  "transactions": [
+    {
+      "timestamp": "2026-08-14T10:04:00",
+      "time_str": "10:04",
+      "direction": "inflow",
+      "amount": 1000000.0,
+      "amount_inr_str": "Rs 10.0L",
+      "counterparty_id": "ACC-A-001",
+      "channel": "RTGS",
+      "transaction_id": "TXN-DEMO-S001-001",
+      "annotations": [
+        "large_amount",
+        "large_inflow",
+        "suspicious_pattern"
+      ]
+    },
+    {
+      "timestamp": "2026-08-14T10:21:00",
+      "time_str": "10:21",
+      "direction": "outflow",
+      "amount": 320000.0,
+      "amount_inr_str": "Rs 3.2L",
+      "counterparty_id": "ACC-C-001",
+      "channel": "IMPS",
+      "transaction_id": "TXN-DEMO-S001-002",
+      "annotations": [
+        "significant_outflow",
+        "suspicious_pattern"
+      ]
+    },
+    {
+      "timestamp": "2026-08-14T10:36:00",
+      "time_str": "10:36",
+      "direction": "outflow",
+      "amount": 280000.0,
+      "amount_inr_str": "Rs 2.8L",
+      "counterparty_id": "ACC-D-001",
+      "channel": "NEFT",
+      "transaction_id": "TXN-DEMO-S001-003",
+      "annotations": [
+        "significant_outflow",
+        "suspicious_pattern"
+      ]
+    },
+    {
+      "timestamp": "2026-08-14T10:52:00",
+      "time_str": "10:52",
+      "direction": "outflow",
+      "amount": 170000.0,
+      "amount_inr_str": "Rs 1.7L",
+      "counterparty_id": "ACC-E-001",
+      "channel": "UPI",
+      "transaction_id": "TXN-DEMO-S001-004",
+      "annotations": [
+        "significant_outflow",
+        "suspicious_pattern"
+      ]
+    },
+    {
+      "timestamp": "2026-08-14T11:02:00",
+      "time_str": "11:02",
+      "direction": "outflow",
+      "amount": 200000.0,
+      "amount_inr_str": "Rs 2.0L",
+      "counterparty_id": "ACC-F-001",
+      "channel": "IMPS",
+      "transaction_id": "TXN-DEMO-S001-005",
+      "annotations": [
+        "significant_outflow",
+        "suspicious_pattern"
+      ]
+    }
+  ],
+  "behavioral_features": {
+    "account_id": "ACC-B-001",
+    "behavior_deviation_score": 0.85,
+    "deviation_details": {
+      "outflow_amount_deviation": 0.85,
+      "inflow_amount_deviation": 0.8,
+      "velocity_deviation": 0.8,
+      "new_counterparty_ratio": 1.0
+    },
+    "current_tx_count": 148,
+    "new_counterparty_ratio": 1.0,
+    "deviation_message": "Account has no prior commercial history; 100% of transaction counterparties are newly introduced."
+  },
+  "temporal_features": {
+    "account_id": "ACC-B-001",
+    "15m_inflow_total": 0.0,
+    "15m_outflow_total": 0.0,
+    "15m_tx_count": 0,
+    "15m_incoming_count": 0,
+    "15m_outgoing_count": 0,
+    "15m_unique_counterparties": 0,
+    "15m_transaction_velocity": 0.0,
+    "15m_amount_velocity": 0.0,
+    "1h_inflow_total": 0.0,
+    "1h_outflow_total": 650000.0,
+    "1h_tx_count": 3,
+    "1h_incoming_count": 0,
+    "1h_outgoing_count": 3,
+    "1h_unique_counterparties": 3,
+    "1h_transaction_velocity": 3.0,
+    "1h_amount_velocity": 649999.35,
+    "6h_inflow_total": 1000000.0,
+    "6h_outflow_total": 970000.0,
+    "6h_tx_count": 5,
+    "6h_incoming_count": 1,
+    "6h_outgoing_count": 4,
+    "6h_unique_counterparties": 5,
+    "6h_transaction_velocity": 0.8333,
+    "6h_amount_velocity": 328333.28,
+    "24h_inflow_total": 1000000.0,
+    "24h_outflow_total": 970000.0,
+    "24h_tx_count": 5,
+    "24h_incoming_count": 1,
+    "24h_outgoing_count": 4,
+    "24h_unique_counterparties": 5,
+    "24h_transaction_velocity": 0.2083,
+    "24h_amount_velocity": 82083.33,
+    "3d_inflow_total": 1000000.0,
+    "3d_outflow_total": 970000.0,
+    "3d_tx_count": 5,
+    "3d_incoming_count": 1,
+    "3d_outgoing_count": 4,
+    "3d_unique_counterparties": 5,
+    "3d_transaction_velocity": 0.0694,
+    "3d_amount_velocity": 27361.11,
+    "7d_inflow_total": 1000000.0,
+    "7d_outflow_total": 970000.0,
+    "7d_tx_count": 5,
+    "7d_incoming_count": 1,
+    "7d_outgoing_count": 4,
+    "7d_unique_counterparties": 5,
+    "7d_transaction_velocity": 0.0298,
+    "7d_amount_velocity": 11726.19,
+    "time_to_first_outflow_minutes": 17.0,
+    "time_to_50pct_outflow_minutes": 32.0,
+    "time_to_90pct_outflow_minutes": 58.0,
+    "redistribution_speed_score": 0.9942,
+    "temporal_signal": 0.5871
+  },
+  "flow_features": {
+    "account_id": "ACC-B-001",
+    "conservation_ratio": 0.97,
+    "redistribution_ratio": 0.97,
+    "inflow_outflow_ratio": 1.0309,
+    "inflow_total_24h": 1000000.0,
+    "outflow_total_24h": 970000.0,
+    "net_flow_24h": 30000.0,
+    "recipient_count": 4,
+    "new_recipient_count": 4,
+    "new_recipient_ratio": 1.0,
+    "recipient_concentration": 0.2654,
+    "amount_concentration": 0.3299,
+    "onward_movement": true,
+    "downstream_recipient_count": 1,
+    "downstream_amount": 140000.0,
+    "flow_signal": 0.8145
+  },
+  "network_features": {
+    "account_id": "ACC-B-001",
+    "in_graph": true,
+    "in_degree": 1,
+    "out_degree": 4,
+    "weighted_in_degree": 1000000.0,
+    "weighted_out_degree": 970000.0,
+    "total_degree": 5,
+    "fan_in": 1,
+    "fan_out": 4,
+    "counterparty_count": 5,
+    "degree_centrality": 0.0099,
+    "betweenness_centrality": 0.0,
+    "k_hop_network_size": 94,
+    "network_depth": 4,
+    "suspicious_neighbor_count": 0,
+    "community_id": null,
+    "graph_signal": 0.1475
+  },
+  "graph": {
+    "node_count": 506,
+    "edge_count": 5004,
+    "html": "<html>\n    <head>\n        <meta charset=\"utf-8\">\n        \n            <script src=\"lib/bindings/utils.js\"></script>\n            <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css\" integrity=\"sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />\n            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js\" integrity=\"sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>\n            \n        \n<center>\n<h1></h1>\n</center>\n\n<!-- <link rel=\"stylesheet\" href=\"../node_modules/vis/dist/vis.min.css\" type=\"text/css\" />\n<script type=\"text/javascript\" src=\"../node_modules/vis/dist/vis.js\"> </script>-->\n        <link\n          href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css\"\n          rel=\"stylesheet\"\n          integrity=\"sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6\"\n          crossorigin=\"anonymous\"\n        />\n        <script\n          src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js\"\n          integrity=\"sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf\"\n          crossorigin=\"anonymous\"\n        ></script>\n\n\n        <center>\n          <h1></h1>\n        </center>\n        <style type=\"text/css\">\n\n             #mynetwork {\n                 width: 100%;\n                 height: 500px;\n                 background-color: #ffffff;\n                 border: 1px solid lightgray;\n                 position: relative;\n                 float: left;\n             }\n\n             \n\n             \n\n             \n        </style>\n    </head>\n\n\n    <body>\n        <div class=\"card\" style=\"width: 100%\">\n            \n            \n            <div class=\"graph-container-wrap\"><div id=\"mynetwork\" class=\"card-body\"></div>\n    <!-- Top-Left Floating Legend -->\n    <div class=\"graph-legend-bar\">\n      <div class=\"legend-item\"><span class=\"legend-dot\" style=\"background:#533afd;\"></span> <b>Target</b></div>\n      <div class=\"legend-item\"><span class=\"legend-dot\" style=\"background:#059669;\"></span> Inflow</div>\n      <div class=\"legend-item\"><span class=\"legend-dot\" style=\"background:#e11d48;\"></span> Outflow</div>\n      <div class=\"legend-item\"><span class=\"legend-dot\" style=\"background:#7c3aed;\"></span> Downstream</div>\n      <div class=\"legend-item\" style=\"color:#64748b; font-size:10.5px;\">(Click node to inspect)</div>\n    </div>\n\n    <!-- Right-Side Floating Account Details Drawer -->\n    <div class=\"graph-details-drawer\" id=\"accountDetailsDrawer\">\n      <div class=\"drawer-header\">\n        <div>\n          <div style=\"font-size:10.5px;font-weight:700;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;\">Account Details</div>\n          <div class=\"drawer-title\" id=\"d_account_id\">ACC-B-001</div>\n          <div class=\"drawer-badge\" id=\"d_role_badge\" style=\"background:#ede9fe; color:#4338ca;\">Target Subject Account</div>\n        </div>\n        <button onclick=\"resetToTarget()\" style=\"background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;padding:3px 8px;color:#334155;\" title=\"Reset focus to target account\">\u2605 Target</button>\n      </div>\n\n      <div class=\"drawer-field\">\n        <div class=\"drawer-field-label\">Role</div>\n        <div class=\"drawer-field-val\" id=\"d_role_desc\" style=\"white-space:pre-line;\">Subject under investigation</div>\n      </div>\n\n      <div class=\"drawer-field\">\n        <div class=\"drawer-field-label\">Relevant Activity</div>\n        <div class=\"drawer-field-val\" id=\"d_activity\" style=\"white-space:pre-line;\">\u20b910,00,000 received&#10;\u20b99,70,000 transferred onward</div>\n      </div>\n\n      <div class=\"drawer-field\">\n        <div class=\"drawer-field-label\">Key Indicators</div>\n        <div class=\"drawer-field-val\" id=\"d_indicators\" style=\"font-size:11px;line-height:1.45;color:#334155;white-space:pre-line;\">\u2022 Rapid movement of funds&#10;\u2022 New counterparties&#10;\u2022 Downstream movement</div>\n      </div>\n\n      <div class=\"tx-mini-table\">\n        <div class=\"drawer-field-label\" style=\"font-weight:600;margin-bottom:4px;\">Transfers & Counterparties</div>\n        <div id=\"d_transfers_list\">\n          <!-- Dynamic transfers list -->\n        </div>\n      </div>\n    </div>\n    </div>\n        </div>\n\n        \n        \n\n        <script type=\"text/javascript\">\n\n              // initialize global variables.\n              var edges;\n              var nodes;\n              var allNodes;\n              var allEdges;\n              var nodeColors;\n              var originalNodes;\n              var network;\n              var container;\n              var options, data;\n              var filter = {\n                  item : '',\n                  property : '',\n                  value : []\n              };\n\n              \n\n              \n\n              // This method is responsible for drawing the graph, returns the drawn network\n              function drawGraph() {\n                  var container = document.getElementById('mynetwork');\n\n                  \n\n                  // parsing and collecting nodes and edges from the python\n                  nodes = new vis.DataSet([{\"borderWidth\": 4, \"color\": {\"background\": \"#533afd\", \"border\": \"#1e1b4b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-B-001\", \"label\": \"\\u2605 ACC-B-001\\n(TARGET)\", \"shape\": \"dot\", \"size\": 34, \"title\": \"ACC-B-001\\nTarget Account\\n\\u20b910,00,000 inflow\\n\\u20b99,70,000 outflow\"}, {\"borderWidth\": 2.5, \"color\": {\"background\": \"#059669\", \"border\": \"#064e3b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-A-001\", \"label\": \"ACC-A-001\\n(INFLOW)\", \"shape\": \"dot\", \"size\": 26, \"title\": \"ACC-A-001\\nPrimary Inflow Source\\nInflow: \\u20b91,712,471\"}, {\"borderWidth\": 2.5, \"color\": {\"background\": \"#e11d48\", \"border\": \"#881337\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-C-001\", \"label\": \"ACC-C-001\\n(OUTFLOW)\", \"shape\": \"dot\", \"size\": 25, \"title\": \"ACC-C-001\\nOutbound Recipient\\nOutflow: \\u20b9965,975\"}, {\"borderWidth\": 2.5, \"color\": {\"background\": \"#e11d48\", \"border\": \"#881337\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-D-001\", \"label\": \"ACC-D-001\\n(OUTFLOW)\", \"shape\": \"dot\", \"size\": 25, \"title\": \"ACC-D-001\\nOutbound Recipient\\nOutflow: \\u20b9543,699\"}, {\"borderWidth\": 2.5, \"color\": {\"background\": \"#e11d48\", \"border\": \"#881337\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-F-001\", \"label\": \"ACC-F-001\\n(OUTFLOW)\", \"shape\": \"dot\", \"size\": 25, \"title\": \"ACC-F-001\\nOutbound Recipient\\nOutflow: \\u20b9551,218\"}, {\"borderWidth\": 2.5, \"color\": {\"background\": \"#e11d48\", \"border\": \"#881337\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-E-001\", \"label\": \"ACC-E-001\\n(OUTFLOW)\", \"shape\": \"dot\", \"size\": 25, \"title\": \"ACC-E-001\\nOutbound Recipient\\nOutflow: \\u20b9765,779\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0145\", \"label\": \"ACC-0145\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0145\\nDownstream Movement\\nVolume: \\u20b9425,790\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0126\", \"label\": \"ACC-0126\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0126\\nDownstream Movement\\nVolume: \\u20b95,854,901\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0196\", \"label\": \"ACC-0196\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0196\\nDownstream Movement\\nVolume: \\u20b9427,594\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0129\", \"label\": \"ACC-0129\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0129\\nDownstream Movement\\nVolume: \\u20b9331,934\"}, {\"borderWidth\": 1.5, \"color\": {\"background\": \"#94a3b8\", \"border\": \"#64748b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"SUMMARY-ACC-C-001\", \"label\": \"+6 other counterparties\", \"shape\": \"box\", \"size\": 18, \"title\": \"+6 other counterparties\\nAggregated Background Counterparties\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0114\", \"label\": \"ACC-0114\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0114\\nDownstream Movement\\nVolume: \\u20b91,157,980\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0224\", \"label\": \"ACC-0224\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0224\\nDownstream Movement\\nVolume: \\u20b91,776,725\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0455\", \"label\": \"ACC-0455\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0455\\nDownstream Movement\\nVolume: \\u20b9577,395\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0558\", \"label\": \"ACC-0558\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0558\\nDownstream Movement\\nVolume: \\u20b9367,970\"}, {\"borderWidth\": 1.5, \"color\": {\"background\": \"#94a3b8\", \"border\": \"#64748b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"SUMMARY-ACC-D-001\", \"label\": \"+4 other counterparties\", \"shape\": \"box\", \"size\": 18, \"title\": \"+4 other counterparties\\nAggregated Background Counterparties\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0245\", \"label\": \"ACC-0245\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0245\\nDownstream Movement\\nVolume: \\u20b9613,351\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0247\", \"label\": \"ACC-0247\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0247\\nDownstream Movement\\nVolume: \\u20b9482,935\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-G-001\", \"label\": \"ACC-G-001\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-G-001\\nDownstream Movement\\nVolume: \\u20b9516,449\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0164\", \"label\": \"ACC-0164\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0164\\nDownstream Movement\\nVolume: \\u20b9445,203\"}, {\"borderWidth\": 1.5, \"color\": {\"background\": \"#94a3b8\", \"border\": \"#64748b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"SUMMARY-ACC-F-001\", \"label\": \"+7 other counterparties\", \"shape\": \"box\", \"size\": 18, \"title\": \"+7 other counterparties\\nAggregated Background Counterparties\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0172\", \"label\": \"ACC-0172\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0172\\nDownstream Movement\\nVolume: \\u20b9450,068\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0234\", \"label\": \"ACC-0234\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0234\\nDownstream Movement\\nVolume: \\u20b9673,457\"}, {\"borderWidth\": 2, \"color\": {\"background\": \"#7c3aed\", \"border\": \"#4c1d95\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"ACC-0273\", \"label\": \"ACC-0273\\n(DOWNSTREAM)\", \"shape\": \"dot\", \"size\": 20, \"title\": \"ACC-0273\\nDownstream Movement\\nVolume: \\u20b9405,657\"}, {\"borderWidth\": 1.5, \"color\": {\"background\": \"#94a3b8\", \"border\": \"#64748b\"}, \"font\": {\"color\": \"#0d253d\"}, \"id\": \"SUMMARY-ACC-E-001\", \"label\": \"+8 other counterparties\", \"shape\": \"box\", \"size\": 18, \"title\": \"+8 other counterparties\\nAggregated Background Counterparties\"}]);\n                  edges = new vis.DataSet([{\"arrows\": \"to\", \"color\": \"#ea2261\", \"dashes\": false, \"from\": \"ACC-B-001\", \"label\": \"\\u20b93.2L\", \"title\": \"ACC-B-001 \\u2192 ACC-C-001\\nAmount: \\u20b9320,000 (\\u20b93.2L)\\nSignal: Rapid Outbound Dispersal\\nTransfers: 1 transaction\\nTime: 2026-08-14 10:21:00\", \"to\": \"ACC-C-001\", \"value\": 3.7777777777777777}, {\"arrows\": \"to\", \"color\": \"#ea2261\", \"dashes\": false, \"from\": \"ACC-B-001\", \"label\": \"\\u20b92.8L\", \"title\": \"ACC-B-001 \\u2192 ACC-D-001\\nAmount: \\u20b9280,000 (\\u20b92.8L)\\nSignal: Rapid Outbound Dispersal\\nTransfers: 1 transaction\\nTime: 2026-08-14 10:36:00\", \"to\": \"ACC-D-001\", \"value\": 3.5555555555555554}, {\"arrows\": \"to\", \"color\": \"#ea2261\", \"dashes\": false, \"from\": \"ACC-B-001\", \"label\": \"\\u20b92.0L\", \"title\": \"ACC-B-001 \\u2192 ACC-F-001\\nAmount: \\u20b9200,000 (\\u20b92.0L)\\nSignal: Rapid Outbound Dispersal\\nTransfers: 1 transaction\\nTime: 2026-08-14 11:02:00\", \"to\": \"ACC-F-001\", \"value\": 3.111111111111111}, {\"arrows\": \"to\", \"color\": \"#ea2261\", \"dashes\": false, \"from\": \"ACC-B-001\", \"label\": \"\\u20b91.7L\", \"title\": \"ACC-B-001 \\u2192 ACC-E-001\\nAmount: \\u20b9170,000 (\\u20b91.7L)\\nSignal: Rapid Outbound Dispersal\\nTransfers: 1 transaction\\nTime: 2026-08-14 10:52:00\", \"to\": \"ACC-E-001\", \"value\": 2.9444444444444446}, {\"arrows\": \"to\", \"color\": \"#10b981\", \"dashes\": false, \"from\": \"ACC-A-001\", \"label\": \"\\u20b910.0L\", \"title\": \"ACC-A-001 \\u2192 ACC-B-001\\nAmount: \\u20b91,000,000 (\\u20b910.0L)\\nSignal: Primary Inflow Source\\nTransfers: 1 transaction\\nTime: 2026-08-14 10:04:00\", \"to\": \"ACC-B-001\", \"value\": 7.5}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-C-001\", \"label\": \"\\u20b917,882\", \"title\": \"ACC-C-001 \\u2192 ACC-0145\\nAmount: \\u20b917,882 (\\u20b917,882)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-26 21:49:11\", \"to\": \"ACC-0145\", \"value\": 2.0993451666666667}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-C-001\", \"label\": \"\\u20b917,798\", \"title\": \"ACC-C-001 \\u2192 ACC-0126\\nAmount: \\u20b917,798 (\\u20b917,798)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-16 12:01:31\", \"to\": \"ACC-0126\", \"value\": 2.0988766111111112}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-C-001\", \"label\": \"\\u20b925,115\", \"title\": \"ACC-C-001 \\u2192 ACC-0196\\nAmount: \\u20b925,115 (\\u20b925,115)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-16 07:41:30\", \"to\": \"ACC-0196\", \"value\": 2.1395303333333335}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-C-001\", \"label\": \"\\u20b923,687\", \"title\": \"ACC-C-001 \\u2192 ACC-0129\\nAmount: \\u20b923,687 (\\u20b923,687)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-24 16:07:01\", \"to\": \"ACC-0129\", \"value\": 2.131595611111111}, {\"arrows\": \"to\", \"color\": \"#94a3b8\", \"dashes\": true, \"from\": \"ACC-C-001\", \"label\": \"\\u20b91.0L\", \"title\": \"ACC-C-001 \\u2192 SUMMARY-ACC-C-001\\nAmount: \\u20b9101,747 (\\u20b91.0L)\\nSignal: Aggregated Background Flow\\nTransfers: 6 transactions\\nTime: Recent\", \"to\": \"SUMMARY-ACC-C-001\", \"value\": 2.5652609444444443}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-D-001\", \"label\": \"\\u20b919,507\", \"title\": \"ACC-D-001 \\u2192 ACC-0114\\nAmount: \\u20b919,507 (\\u20b919,507)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-13 05:38:03\", \"to\": \"ACC-0114\", \"value\": 2.1083701111111113}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-D-001\", \"label\": \"\\u20b918,067\", \"title\": \"ACC-D-001 \\u2192 ACC-0224\\nAmount: \\u20b918,067 (\\u20b918,067)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-08 23:50:02\", \"to\": \"ACC-0224\", \"value\": 2.1003736111111113}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-D-001\", \"label\": \"\\u20b926,200\", \"title\": \"ACC-D-001 \\u2192 ACC-0455\\nAmount: \\u20b926,200 (\\u20b926,200)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-25 22:15:20\", \"to\": \"ACC-0455\", \"value\": 2.145554111111111}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-D-001\", \"label\": \"\\u20b922,665\", \"title\": \"ACC-D-001 \\u2192 ACC-0558\\nAmount: \\u20b922,665 (\\u20b922,665)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-27 04:04:17\", \"to\": \"ACC-0558\", \"value\": 2.1259180555555557}, {\"arrows\": \"to\", \"color\": \"#94a3b8\", \"dashes\": true, \"from\": \"ACC-D-001\", \"label\": \"\\u20b975,563\", \"title\": \"ACC-D-001 \\u2192 SUMMARY-ACC-D-001\\nAmount: \\u20b975,563 (\\u20b975,563)\\nSignal: Aggregated Background Flow\\nTransfers: 4 transactions\\nTime: Recent\", \"to\": \"SUMMARY-ACC-D-001\", \"value\": 2.4197925555555555}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-F-001\", \"label\": \"\\u20b921,681\", \"title\": \"ACC-F-001 \\u2192 ACC-0245\\nAmount: \\u20b921,681 (\\u20b921,681)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-19 17:35:01\", \"to\": \"ACC-0245\", \"value\": 2.120448722222222}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-F-001\", \"label\": \"\\u20b921,257\", \"title\": \"ACC-F-001 \\u2192 ACC-0247\\nAmount: \\u20b921,257 (\\u20b921,257)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-12 01:43:24\", \"to\": \"ACC-0247\", \"value\": 2.118094388888889}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-F-001\", \"label\": \"\\u20b921,107\", \"title\": \"ACC-F-001 \\u2192 ACC-G-001\\nAmount: \\u20b921,107 (\\u20b921,107)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-01 04:17:34\", \"to\": \"ACC-G-001\", \"value\": 2.117259777777778}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-F-001\", \"label\": \"\\u20b918,573\", \"title\": \"ACC-F-001 \\u2192 ACC-0164\\nAmount: \\u20b918,573 (\\u20b918,573)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-16 06:55:22\", \"to\": \"ACC-0164\", \"value\": 2.1031850555555556}, {\"arrows\": \"to\", \"color\": \"#94a3b8\", \"dashes\": true, \"from\": \"ACC-F-001\", \"label\": \"\\u20b91.3L\", \"title\": \"ACC-F-001 \\u2192 SUMMARY-ACC-F-001\\nAmount: \\u20b9129,088 (\\u20b91.3L)\\nSignal: Aggregated Background Flow\\nTransfers: 7 transactions\\nTime: Recent\", \"to\": \"SUMMARY-ACC-F-001\", \"value\": 2.7171535}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-E-001\", \"label\": \"\\u20b91.4L\", \"title\": \"ACC-E-001 \\u2192 ACC-G-001\\nAmount: \\u20b9140,000 (\\u20b91.4L)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-14 11:18:00\", \"to\": \"ACC-G-001\", \"value\": 2.7777777777777777}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-E-001\", \"label\": \"\\u20b913,659\", \"title\": \"ACC-E-001 \\u2192 ACC-0172\\nAmount: \\u20b913,659 (\\u20b913,659)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-09 12:31:45\", \"to\": \"ACC-0172\", \"value\": 2.0758819444444443}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-E-001\", \"label\": \"\\u20b912,700\", \"title\": \"ACC-E-001 \\u2192 ACC-0234\\nAmount: \\u20b912,700 (\\u20b912,700)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-08-02 00:34:47\", \"to\": \"ACC-0234\", \"value\": 2.070555611111111}, {\"arrows\": \"to\", \"color\": \"#8b5cf6\", \"dashes\": false, \"from\": \"ACC-E-001\", \"label\": \"\\u20b913,754\", \"title\": \"ACC-E-001 \\u2192 ACC-0273\\nAmount: \\u20b913,754 (\\u20b913,754)\\nSignal: Potential Downstream Movement\\nTransfers: 1 transaction\\nTime: 2026-07-19 09:56:15\", \"to\": \"ACC-0273\", \"value\": 2.076413222222222}, {\"arrows\": \"to\", \"color\": \"#94a3b8\", \"dashes\": true, \"from\": \"ACC-E-001\", \"label\": \"\\u20b994,858\", \"title\": \"ACC-E-001 \\u2192 SUMMARY-ACC-E-001\\nAmount: \\u20b994,858 (\\u20b994,858)\\nSignal: Aggregated Background Flow\\nTransfers: 8 transactions\\nTime: Recent\", \"to\": \"SUMMARY-ACC-E-001\", \"value\": 2.526988277777778}]);\n\n                  nodeColors = {};\n                  allNodes = nodes.get({ returnType: \"Object\" });\n                  for (nodeId in allNodes) {\n                    nodeColors[nodeId] = allNodes[nodeId].color;\n                  }\n                  allEdges = edges.get({ returnType: \"Object\" });\n                  // adding nodes and edges to the graph\n                  data = {nodes: nodes, edges: edges};\n\n                  var options = {\"physics\": {\"enabled\": true, \"stabilization\": {\"iterations\": 120, \"fit\": true}, \"barnesHut\": {\"gravitationalConstant\": -3200, \"centralGravity\": 0.25, \"springLength\": 140, \"springConstant\": 0.045, \"damping\": 0.09}}, \"edges\": {\"arrows\": {\"to\": {\"enabled\": true, \"scaleFactor\": 0.9}}, \"smooth\": {\"type\": \"curvedCW\", \"roundness\": 0.18}, \"font\": {\"size\": 10, \"color\": \"#1e293b\", \"align\": \"horizontal\", \"background\": \"rgba(255,255,255,0.92)\", \"strokeWidth\": 0}}, \"nodes\": {\"shape\": \"dot\", \"borderWidth\": 2, \"font\": {\"size\": 11, \"color\": \"#0d253d\", \"face\": \"Inter,sans-serif\"}}, \"interaction\": {\"hover\": true, \"tooltipDelay\": 80, \"selectable\": true, \"multiselect\": false, \"navigationButtons\": true}};\n\n                  \n\n\n                  \n\n                  network = new vis.Network(container, data, options);\n\n                  \n\n                  \n\n                  \n\n\n                  \n\n                  return network;\n\n              }\n              drawGraph();\n        </script>\n    \n    <style>\n      .graph-container-wrap {\n        position: relative;\n        width: 100%;\n        height: 500px;\n        overflow: hidden;\n        border: 1px solid #e2e8f0;\n        border-radius: 12px;\n        background: #fafafa;\n        box-shadow: 0 1px 3px rgba(0,0,0,0.04);\n        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;\n      }\n      #mynetwork {\n        width: 100% !important;\n        height: 100% !important;\n        border: 0 !important;\n        background: #fafafa !important;\n      }\n      /* Lightweight Hover Tooltip */\n      div.vis-tooltip {\n        position: absolute;\n        visibility: hidden;\n        padding: 8px 12px;\n        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;\n        font-size: 11.5px;\n        line-height: 1.45;\n        color: #0f172a;\n        background-color: rgba(255, 255, 255, 0.98);\n        border: 1px solid #cbd5e1;\n        border-radius: 8px;\n        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);\n        white-space: pre-line !important;\n        z-index: 10000;\n        pointer-events: none;\n      }\n      /* Top Legend */\n      .graph-legend-bar {\n        position: absolute;\n        top: 10px;\n        left: 12px;\n        z-index: 50;\n        display: flex;\n        align-items: center;\n        gap: 12px;\n        background: rgba(255, 255, 255, 0.94);\n        backdrop-filter: blur(6px);\n        padding: 6px 12px;\n        border-radius: 8px;\n        border: 1px solid #e2e8f0;\n        font-size: 11.5px;\n        color: #334155;\n        box-shadow: 0 2px 4px rgba(0,0,0,0.03);\n      }\n      .legend-item {\n        display: flex;\n        align-items: center;\n        gap: 5px;\n      }\n      .legend-dot {\n        width: 10px;\n        height: 10px;\n        border-radius: 50%;\n        display: inline-block;\n      }\n      /* Right-side Account Details Drawer */\n      .graph-details-drawer {\n        position: absolute;\n        top: 10px;\n        right: 12px;\n        bottom: 10px;\n        width: 270px;\n        z-index: 60;\n        background: rgba(255, 255, 255, 0.96);\n        backdrop-filter: blur(8px);\n        border: 1px solid #cbd5e1;\n        border-radius: 10px;\n        padding: 14px;\n        box-shadow: -2px 4px 12px rgba(0,0,0,0.08);\n        overflow-y: auto;\n        display: flex;\n        flex-direction: column;\n        transition: all 0.2s ease;\n      }\n      .drawer-header {\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        border-bottom: 1px solid #f1f5f9;\n        padding-bottom: 8px;\n        margin-bottom: 10px;\n      }\n      .drawer-title {\n        font-size: 13.5px;\n        font-weight: 700;\n        color: #0f172a;\n        margin-top: 2px;\n      }\n      .drawer-badge {\n        display: inline-block;\n        font-size: 10px;\n        font-weight: 600;\n        padding: 2px 6px;\n        border-radius: 4px;\n        margin-top: 3px;\n      }\n      .drawer-field {\n        margin-bottom: 9px;\n        font-size: 11.5px;\n      }\n      .drawer-field-label {\n        color: #64748b;\n        font-weight: 600;\n        font-size: 10.5px;\n        text-transform: uppercase;\n        letter-spacing: 0.3px;\n        margin-bottom: 2px;\n      }\n      .drawer-field-val {\n        color: #0f172a;\n        font-weight: 600;\n      }\n      .tx-mini-table {\n        margin-top: 8px;\n        border-top: 1px solid #f1f5f9;\n        padding-top: 8px;\n      }\n      .tx-mini-item {\n        background: #f8fafc;\n        border-radius: 6px;\n        padding: 6px;\n        margin-bottom: 5px;\n        font-size: 10.5px;\n        border-left: 3px solid #cbd5e1;\n      }\n      .tx-mini-item.inflow { border-left-color: #10b981; }\n      .tx-mini-item.outflow { border-left-color: #ea2261; }\n      .tx-mini-item.downstream { border-left-color: #8b5cf6; }\n    </style>\n\n    <script>\n      const graphNodesData = {\"ACC-B-001\": {\"account_id\": \"ACC-B-001\", \"role\": \"Target Subject Account\", \"badge_bg\": \"#ede9fe\", \"badge_color\": \"#4338ca\", \"volume\": \"\\u20b91,970,000\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": true, \"inbound\": [{\"from\": \"ACC-A-001\", \"amount\": \"\\u20b91,000,000\", \"label\": \"\\u20b910.0L\", \"flow\": \"Primary Inflow Source\", \"time\": \"2026-08-14 10:04:00\"}], \"outbound\": [{\"to\": \"ACC-C-001\", \"amount\": \"\\u20b9320,000\", \"label\": \"\\u20b93.2L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:21:00\"}, {\"to\": \"ACC-D-001\", \"amount\": \"\\u20b9280,000\", \"label\": \"\\u20b92.8L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:36:00\"}, {\"to\": \"ACC-F-001\", \"amount\": \"\\u20b9200,000\", \"label\": \"\\u20b92.0L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 11:02:00\"}, {\"to\": \"ACC-E-001\", \"amount\": \"\\u20b9170,000\", \"label\": \"\\u20b91.7L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:52:00\"}]}, \"ACC-A-001\": {\"account_id\": \"ACC-A-001\", \"role\": \"Primary Inflow Source\", \"badge_bg\": \"#dcfce7\", \"badge_color\": \"#15803d\", \"volume\": \"\\u20b91,712,471\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [], \"outbound\": [{\"to\": \"ACC-B-001\", \"amount\": \"\\u20b91,000,000\", \"label\": \"\\u20b910.0L\", \"flow\": \"Primary Inflow Source\", \"time\": \"2026-08-14 10:04:00\"}]}, \"ACC-C-001\": {\"account_id\": \"ACC-C-001\", \"role\": \"Outbound Recipient / New Counterparty\", \"badge_bg\": \"#ffe4e6\", \"badge_color\": \"#be123c\", \"volume\": \"\\u20b9965,975\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-B-001\", \"amount\": \"\\u20b9320,000\", \"label\": \"\\u20b93.2L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:21:00\"}], \"outbound\": [{\"to\": \"ACC-0145\", \"amount\": \"\\u20b917,882\", \"label\": \"\\u20b917,882\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-26 21:49:11\"}, {\"to\": \"ACC-0126\", \"amount\": \"\\u20b917,798\", \"label\": \"\\u20b917,798\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 12:01:31\"}, {\"to\": \"ACC-0196\", \"amount\": \"\\u20b925,115\", \"label\": \"\\u20b925,115\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 07:41:30\"}, {\"to\": \"ACC-0129\", \"amount\": \"\\u20b923,687\", \"label\": \"\\u20b923,687\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-24 16:07:01\"}, {\"to\": \"SUMMARY-ACC-C-001\", \"amount\": \"\\u20b9101,747\", \"label\": \"\\u20b91.0L\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}]}, \"ACC-D-001\": {\"account_id\": \"ACC-D-001\", \"role\": \"Outbound Recipient / New Counterparty\", \"badge_bg\": \"#ffe4e6\", \"badge_color\": \"#be123c\", \"volume\": \"\\u20b9543,699\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-B-001\", \"amount\": \"\\u20b9280,000\", \"label\": \"\\u20b92.8L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:36:00\"}], \"outbound\": [{\"to\": \"ACC-0114\", \"amount\": \"\\u20b919,507\", \"label\": \"\\u20b919,507\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-13 05:38:03\"}, {\"to\": \"ACC-0224\", \"amount\": \"\\u20b918,067\", \"label\": \"\\u20b918,067\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-08 23:50:02\"}, {\"to\": \"ACC-0455\", \"amount\": \"\\u20b926,200\", \"label\": \"\\u20b926,200\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-25 22:15:20\"}, {\"to\": \"ACC-0558\", \"amount\": \"\\u20b922,665\", \"label\": \"\\u20b922,665\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-27 04:04:17\"}, {\"to\": \"SUMMARY-ACC-D-001\", \"amount\": \"\\u20b975,563\", \"label\": \"\\u20b975,563\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}]}, \"ACC-F-001\": {\"account_id\": \"ACC-F-001\", \"role\": \"Outbound Recipient / New Counterparty\", \"badge_bg\": \"#ffe4e6\", \"badge_color\": \"#be123c\", \"volume\": \"\\u20b9551,218\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-B-001\", \"amount\": \"\\u20b9200,000\", \"label\": \"\\u20b92.0L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 11:02:00\"}], \"outbound\": [{\"to\": \"ACC-0245\", \"amount\": \"\\u20b921,681\", \"label\": \"\\u20b921,681\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-19 17:35:01\"}, {\"to\": \"ACC-0247\", \"amount\": \"\\u20b921,257\", \"label\": \"\\u20b921,257\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-12 01:43:24\"}, {\"to\": \"ACC-G-001\", \"amount\": \"\\u20b921,107\", \"label\": \"\\u20b921,107\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-01 04:17:34\"}, {\"to\": \"ACC-0164\", \"amount\": \"\\u20b918,573\", \"label\": \"\\u20b918,573\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 06:55:22\"}, {\"to\": \"SUMMARY-ACC-F-001\", \"amount\": \"\\u20b9129,088\", \"label\": \"\\u20b91.3L\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}]}, \"ACC-E-001\": {\"account_id\": \"ACC-E-001\", \"role\": \"Outbound Recipient / New Counterparty\", \"badge_bg\": \"#ffe4e6\", \"badge_color\": \"#be123c\", \"volume\": \"\\u20b9765,779\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-B-001\", \"amount\": \"\\u20b9170,000\", \"label\": \"\\u20b91.7L\", \"flow\": \"Rapid Outbound Dispersal\", \"time\": \"2026-08-14 10:52:00\"}], \"outbound\": [{\"to\": \"ACC-G-001\", \"amount\": \"\\u20b9140,000\", \"label\": \"\\u20b91.4L\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-14 11:18:00\"}, {\"to\": \"ACC-0172\", \"amount\": \"\\u20b913,659\", \"label\": \"\\u20b913,659\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-09 12:31:45\"}, {\"to\": \"ACC-0234\", \"amount\": \"\\u20b912,700\", \"label\": \"\\u20b912,700\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-02 00:34:47\"}, {\"to\": \"ACC-0273\", \"amount\": \"\\u20b913,754\", \"label\": \"\\u20b913,754\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-19 09:56:15\"}, {\"to\": \"SUMMARY-ACC-E-001\", \"amount\": \"\\u20b994,858\", \"label\": \"\\u20b994,858\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}]}, \"ACC-0145\": {\"account_id\": \"ACC-0145\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9425,790\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-C-001\", \"amount\": \"\\u20b917,882\", \"label\": \"\\u20b917,882\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-26 21:49:11\"}], \"outbound\": []}, \"ACC-0126\": {\"account_id\": \"ACC-0126\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b95,854,901\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-C-001\", \"amount\": \"\\u20b917,798\", \"label\": \"\\u20b917,798\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 12:01:31\"}], \"outbound\": []}, \"ACC-0196\": {\"account_id\": \"ACC-0196\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9427,594\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-C-001\", \"amount\": \"\\u20b925,115\", \"label\": \"\\u20b925,115\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 07:41:30\"}], \"outbound\": []}, \"ACC-0129\": {\"account_id\": \"ACC-0129\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9331,934\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-C-001\", \"amount\": \"\\u20b923,687\", \"label\": \"\\u20b923,687\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-24 16:07:01\"}], \"outbound\": []}, \"SUMMARY-ACC-C-001\": {\"account_id\": \"SUMMARY-ACC-C-001\", \"role\": \"Aggregated Background Counterparties\", \"badge_bg\": \"#f1f5f9\", \"badge_color\": \"#475569\", \"volume\": \"\\u20b9101,747\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-C-001\", \"amount\": \"\\u20b9101,747\", \"label\": \"\\u20b91.0L\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}], \"outbound\": []}, \"ACC-0114\": {\"account_id\": \"ACC-0114\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b91,157,980\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-D-001\", \"amount\": \"\\u20b919,507\", \"label\": \"\\u20b919,507\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-13 05:38:03\"}], \"outbound\": []}, \"ACC-0224\": {\"account_id\": \"ACC-0224\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b91,776,725\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-D-001\", \"amount\": \"\\u20b918,067\", \"label\": \"\\u20b918,067\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-08 23:50:02\"}], \"outbound\": []}, \"ACC-0455\": {\"account_id\": \"ACC-0455\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9577,395\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-D-001\", \"amount\": \"\\u20b926,200\", \"label\": \"\\u20b926,200\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-25 22:15:20\"}], \"outbound\": []}, \"ACC-0558\": {\"account_id\": \"ACC-0558\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9367,970\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-D-001\", \"amount\": \"\\u20b922,665\", \"label\": \"\\u20b922,665\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-27 04:04:17\"}], \"outbound\": []}, \"SUMMARY-ACC-D-001\": {\"account_id\": \"SUMMARY-ACC-D-001\", \"role\": \"Aggregated Background Counterparties\", \"badge_bg\": \"#f1f5f9\", \"badge_color\": \"#475569\", \"volume\": \"\\u20b975,563\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-D-001\", \"amount\": \"\\u20b975,563\", \"label\": \"\\u20b975,563\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}], \"outbound\": []}, \"ACC-0245\": {\"account_id\": \"ACC-0245\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9613,351\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-F-001\", \"amount\": \"\\u20b921,681\", \"label\": \"\\u20b921,681\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-19 17:35:01\"}], \"outbound\": []}, \"ACC-0247\": {\"account_id\": \"ACC-0247\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9482,935\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-F-001\", \"amount\": \"\\u20b921,257\", \"label\": \"\\u20b921,257\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-12 01:43:24\"}], \"outbound\": []}, \"ACC-G-001\": {\"account_id\": \"ACC-G-001\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9516,449\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-F-001\", \"amount\": \"\\u20b921,107\", \"label\": \"\\u20b921,107\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-01 04:17:34\"}, {\"from\": \"ACC-E-001\", \"amount\": \"\\u20b9140,000\", \"label\": \"\\u20b91.4L\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-14 11:18:00\"}], \"outbound\": []}, \"ACC-0164\": {\"account_id\": \"ACC-0164\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9445,203\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-F-001\", \"amount\": \"\\u20b918,573\", \"label\": \"\\u20b918,573\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-16 06:55:22\"}], \"outbound\": []}, \"SUMMARY-ACC-F-001\": {\"account_id\": \"SUMMARY-ACC-F-001\", \"role\": \"Aggregated Background Counterparties\", \"badge_bg\": \"#f1f5f9\", \"badge_color\": \"#475569\", \"volume\": \"\\u20b9129,088\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-F-001\", \"amount\": \"\\u20b9129,088\", \"label\": \"\\u20b91.3L\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}], \"outbound\": []}, \"ACC-0172\": {\"account_id\": \"ACC-0172\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9450,068\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-E-001\", \"amount\": \"\\u20b913,659\", \"label\": \"\\u20b913,659\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-09 12:31:45\"}], \"outbound\": []}, \"ACC-0234\": {\"account_id\": \"ACC-0234\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9673,457\", \"suspicious\": \"HIGH RISK / FLAGGED\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-E-001\", \"amount\": \"\\u20b912,700\", \"label\": \"\\u20b912,700\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-08-02 00:34:47\"}], \"outbound\": []}, \"ACC-0273\": {\"account_id\": \"ACC-0273\", \"role\": \"Candidate Downstream Movement\", \"badge_bg\": \"#f3e8ff\", \"badge_color\": \"#6b21a8\", \"volume\": \"\\u20b9405,657\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-E-001\", \"amount\": \"\\u20b913,754\", \"label\": \"\\u20b913,754\", \"flow\": \"Potential Downstream Movement\", \"time\": \"2026-07-19 09:56:15\"}], \"outbound\": []}, \"SUMMARY-ACC-E-001\": {\"account_id\": \"SUMMARY-ACC-E-001\", \"role\": \"Aggregated Background Counterparties\", \"badge_bg\": \"#f1f5f9\", \"badge_color\": \"#475569\", \"volume\": \"\\u20b994,858\", \"suspicious\": \"Standard Activity\", \"is_center\": false, \"inbound\": [{\"from\": \"ACC-E-001\", \"amount\": \"\\u20b994,858\", \"label\": \"\\u20b994,858\", \"flow\": \"Aggregated Background Flow\", \"time\": \"Recent\"}], \"outbound\": []}};\n      const centerAccountId = \"ACC-B-001\";\n\n      function updateDrawer(nodeId) {\n        const d = graphNodesData[nodeId];\n        if (!d) return;\n\n        document.getElementById(\"d_account_id\").textContent = d.account_id;\n        const badge = document.getElementById(\"d_role_badge\");\n        badge.textContent = d.role;\n        badge.style.background = d.badge_bg;\n        badge.style.color = d.badge_color;\n\n        const roleDesc = document.getElementById(\"d_role_desc\");\n        const actDiv = document.getElementById(\"d_activity\");\n        const indDiv = document.getElementById(\"d_indicators\");\n\n        if (d.account_id === centerAccountId || d.is_center) {\n          if (roleDesc) roleDesc.textContent = \"Subject under investigation\";\n          if (actDiv) actDiv.textContent = \"\u20b910,00,000 received\\n\u20b99,70,000 transferred onward\";\n          if (indDiv) indDiv.textContent = \"\u2022 Rapid movement of funds\\n\u2022 New counterparties\\n\u2022 Downstream movement\";\n        } else if (d.role.indexOf(\"Inflow\") !== -1) {\n          if (roleDesc) roleDesc.textContent = \"Primary fund origin account\";\n          if (actDiv) actDiv.textContent = d.volume + \" transferred to subject account\";\n          if (indDiv) indDiv.textContent = \"\u2022 High-value initial funding\\n\u2022 Single large transaction burst\";\n        } else if (d.role.indexOf(\"Outflow\") !== -1) {\n          if (roleDesc) roleDesc.textContent = \"Immediate dispersal recipient\";\n          if (actDiv) actDiv.textContent = d.volume + \" received from subject account\";\n          if (indDiv) indDiv.textContent = \"\u2022 New counterparty for subject\\n\u2022 Received rapid pass-through funds\";\n        } else if (d.role.indexOf(\"Downstream\") !== -1) {\n          if (roleDesc) roleDesc.textContent = \"Candidate downstream entity\";\n          if (actDiv) actDiv.textContent = d.volume + \" candidate downstream movement\";\n          if (indDiv) indDiv.textContent = \"\u2022 Multi-hop layering trail\\n\u2022 Linked to recipient mule\";\n        } else {\n          if (roleDesc) roleDesc.textContent = \"Connected network counterparty\";\n          if (actDiv) actDiv.textContent = \"Observed volume: \" + d.volume;\n          if (indDiv) indDiv.textContent = \"\u2022 Historical transaction counterparty\";\n        }\n\n        const listDiv = document.getElementById(\"d_transfers_list\");\n        listDiv.innerHTML = \"\";\n\n        // Inbound\n        if (d.inbound && d.inbound.length > 0) {\n          d.inbound.forEach(tx => {\n            const el = document.createElement(\"div\");\n            el.className = \"tx-mini-item inflow\";\n            const topDiv = document.createElement(\"div\");\n            topDiv.style.fontWeight = \"600\";\n            topDiv.textContent = \"\u2190 IN: \" + tx.label + \" from \" + tx.from;\n            const timeDiv = document.createElement(\"div\");\n            timeDiv.style.color = \"#64748b\";\n            timeDiv.style.fontSize = \"10px\";\n            timeDiv.textContent = tx.time;\n            el.appendChild(topDiv);\n            el.appendChild(timeDiv);\n            listDiv.appendChild(el);\n          });\n        }\n\n        // Outbound\n        if (d.outbound && d.outbound.length > 0) {\n          d.outbound.forEach(tx => {\n            const el = document.createElement(\"div\");\n            el.className = \"tx-mini-item outflow\";\n            const topDiv = document.createElement(\"div\");\n            topDiv.style.fontWeight = \"600\";\n            topDiv.textContent = \"\u2192 OUT: \" + tx.label + \" to \" + tx.to;\n            const timeDiv = document.createElement(\"div\");\n            timeDiv.style.color = \"#64748b\";\n            timeDiv.style.fontSize = \"10px\";\n            timeDiv.textContent = tx.time;\n            el.appendChild(topDiv);\n            el.appendChild(timeDiv);\n            listDiv.appendChild(el);\n          });\n        }\n\n        if ((!d.inbound || d.inbound.length === 0) && (!d.outbound || d.outbound.length === 0)) {\n          const emptyDiv = document.createElement(\"div\");\n          emptyDiv.style.color = \"#94a3b8\";\n          emptyDiv.style.fontSize = \"11px\";\n          emptyDiv.textContent = \"No direct transfers recorded in this level.\";\n          listDiv.appendChild(emptyDiv);\n        }\n      }\n\n      function resetToTarget() {\n        updateDrawer(centerAccountId);\n        if (typeof network !== \"undefined\" && network) {\n          network.selectNodes([centerAccountId]);\n          network.focus(centerAccountId, {scale: 1.1, animation: true});\n        }\n      }\n\n      window.addEventListener(\"DOMContentLoaded\", function() {\n        updateDrawer(centerAccountId);\n        if (typeof network !== \"undefined\" && network) {\n          network.on(\"selectNode\", function(params) {\n            if (params.nodes && params.nodes.length > 0) {\n              updateDrawer(params.nodes[0]);\n            }\n          });\n          network.on(\"deselectNode\", function() {\n            updateDrawer(centerAccountId);\n          });\n        }\n      });\n      setTimeout(function() {\n        updateDrawer(centerAccountId);\n        if (typeof network !== \"undefined\" && network) {\n          network.on(\"selectNode\", function(params) {\n            if (params.nodes && params.nodes.length > 0) {\n              updateDrawer(params.nodes[0]);\n            }\n          });\n        }\n      }, 500);\n    </script>\n    </body>\n</html>",
+    "status": "READY"
+  },
+  "lineage": {
+    "origin_transaction": "TXN-DEMO-S001-001",
+    "origin_receiver": "ACC-B-001",
+    "candidate_downstream_transactions": [
+      {
+        "transaction_id": "TXN-DEMO-S001-002",
+        "from_account": "ACC-B-001",
+        "to_account": "ACC-C-001",
+        "amount": 320000.0,
+        "timestamp": "2026-08-14 10:21:00",
+        "depth": 1,
+        "temporal_proximity_hours": 0.3,
+        "amount_ratio": 0.32,
+        "hop_strength": 0.318
+      }
+    ],
+    "depth": 1,
+    "lineage_strength": 0.318,
+    "reason": "Found 1 candidate downstream transaction(s) across 1 hop(s). Signals: temporal proximity and amount relationship (not confirmed).",
+    "lineage_type": "potential_downstream_lineage",
+    "disclaimer": "This is a heuristic estimate based on temporal proximity and amount relationships. Not a confirmed fund trace."
+  },
+  "evidence": [
+    {
+      "evidence_id": "E--001-001",
+      "case_id": "CASE-DEMO-001",
+      "evidence_type": "temporal",
+      "account_id": "ACC-B-001",
+      "transaction_id": null,
+      "source": "orchestrator",
+      "value": {
+        "temporal_signal": 0.5871,
+        "speed_score": 0.9942,
+        "time_to_90pct_min": 58.0
+      },
+      "calculation": "redistribution_speed_score = 0.994 | time_to_90pct = 58.0min",
+      "explanation": "Account redistributed funds at high velocity. Time to 90% outflow: 58.0 minutes. Redistribution speed score: 0.99."
+    },
+    {
+      "evidence_id": "E--001-002",
+      "case_id": "CASE-DEMO-001",
+      "evidence_type": "flow",
+      "account_id": "ACC-B-001",
+      "transaction_id": null,
+      "source": "orchestrator",
+      "value": {
+        "account_id": "ACC-B-001",
+        "conservation_ratio": 0.97,
+        "redistribution_ratio": 0.97,
+        "inflow_outflow_ratio": 1.0309,
+        "inflow_total_24h": 1000000.0,
+        "outflow_total_24h": 970000.0,
+        "net_flow_24h": 30000.0,
+        "recipient_count": 4,
+        "new_recipient_count": 4,
+        "new_recipient_ratio": 1.0,
+        "recipient_concentration": 0.2654,
+        "amount_concentration": 0.3299,
+        "onward_movement": true,
+        "downstream_recipient_count": 1,
+        "downstream_amount": 140000.0,
+        "flow_signal": 0.8145
+      },
+      "calculation": "conservation_ratio = 970,000 / (1,000,000 + \u03b5) = 0.9700",
+      "explanation": "Rs 970,000 of Rs 1,000,000 received was sent onward (97% conservation ratio). New recipient ratio: 100%. Signals investigation priority \u2014 not confirmed wrongdoing."
+    },
+    {
+      "evidence_id": "E--001-003",
+      "case_id": "CASE-DEMO-001",
+      "evidence_type": "behavioral",
+      "account_id": "ACC-B-001",
+      "transaction_id": null,
+      "source": "orchestrator",
+      "value": {
+        "deviation": {
+          "account_id": "ACC-B-001",
+          "behavior_deviation_score": 0.85,
+          "deviation_details": {
+            "outflow_amount_deviation": 0.85,
+            "inflow_amount_deviation": 0.8,
+            "velocity_deviation": 0.8,
+            "new_counterparty_ratio": 1.0
+          },
+          "current_tx_count": 148,
+          "new_counterparty_ratio": 1.0,
+          "deviation_message": "Account has no prior commercial history; 100% of transaction counterparties are newly introduced."
+        }
+      },
+      "calculation": "behavior_deviation_score = 0.850",
+      "explanation": "Account activity deviates substantially from historical baseline. Deviation score: 0.85. New counterparty ratio: 100%."
+    },
+    {
+      "evidence_id": "E--001-004",
+      "case_id": "CASE-DEMO-001",
+      "evidence_type": "lineage",
+      "account_id": "ACC-B-001",
+      "transaction_id": null,
+      "source": "orchestrator",
+      "value": {
+        "origin_transaction": "TXN-DEMO-S001-001",
+        "origin_receiver": "ACC-B-001",
+        "candidate_downstream_transactions": [
+          {
+            "transaction_id": "TXN-DEMO-S001-002",
+            "from_account": "ACC-B-001",
+            "to_account": "ACC-C-001",
+            "amount": 320000.0,
+            "timestamp": "2026-08-14 10:21:00",
+            "depth": 1,
+            "temporal_proximity_hours": 0.3,
+            "amount_ratio": 0.32,
+            "hop_strength": 0.318
+          }
+        ],
+        "depth": 1,
+        "lineage_strength": 0.318,
+        "reason": "Found 1 candidate downstream transaction(s) across 1 hop(s). Signals: temporal proximity and amount relationship (not confirmed).",
+        "lineage_type": "potential_downstream_lineage",
+        "disclaimer": "This is a heuristic estimate based on temporal proximity and amount relationships. Not a confirmed fund trace."
+      },
+      "calculation": "lineage_strength = 0.318",
+      "explanation": "Heuristic analysis identified 1 candidate downstream transaction(s) with lineage strength 0.32. Based on temporal proximity and amount relationships. Type: potential_downstream_lineage (not confirmed)."
+    }
+  ],
+  "findings": [
+    {
+      "category": "temporal",
+      "severity": "HIGH",
+      "title": "Rapid Fund Redistribution Detected",
+      "explanation": "Account redistributed funds at high velocity. Time to 90% outflow: 58.0 minutes. Redistribution speed score: 0.99.",
+      "calculation": "redistribution_speed_score = 0.994 | time_to_90pct = 58.0min",
+      "data": {
+        "temporal_signal": 0.5871,
+        "speed_score": 0.9942,
+        "time_to_90pct_min": 58.0
+      },
+      "primary_transaction_id": null,
+      "source_tool": "orchestrator"
+    },
+    {
+      "category": "flow",
+      "severity": "CRITICAL",
+      "title": "High Fund Conservation Ratio",
+      "explanation": "Rs 970,000 of Rs 1,000,000 received was sent onward (97% conservation ratio). New recipient ratio: 100%. Signals investigation priority \u2014 not confirmed wrongdoing.",
+      "calculation": "conservation_ratio = 970,000 / (1,000,000 + \u03b5) = 0.9700",
+      "data": {
+        "account_id": "ACC-B-001",
+        "conservation_ratio": 0.97,
+        "redistribution_ratio": 0.97,
+        "inflow_outflow_ratio": 1.0309,
+        "inflow_total_24h": 1000000.0,
+        "outflow_total_24h": 970000.0,
+        "net_flow_24h": 30000.0,
+        "recipient_count": 4,
+        "new_recipient_count": 4,
+        "new_recipient_ratio": 1.0,
+        "recipient_concentration": 0.2654,
+        "amount_concentration": 0.3299,
+        "onward_movement": true,
+        "downstream_recipient_count": 1,
+        "downstream_amount": 140000.0,
+        "flow_signal": 0.8145
+      },
+      "primary_transaction_id": null,
+      "source_tool": "orchestrator"
+    },
+    {
+      "category": "behavioral",
+      "severity": "HIGH",
+      "title": "Significant Behavioral Deviation",
+      "explanation": "Account activity deviates substantially from historical baseline. Deviation score: 0.85. New counterparty ratio: 100%.",
+      "calculation": "behavior_deviation_score = 0.850",
+      "data": {
+        "deviation": {
+          "account_id": "ACC-B-001",
+          "behavior_deviation_score": 0.85,
+          "deviation_details": {
+            "outflow_amount_deviation": 0.85,
+            "inflow_amount_deviation": 0.8,
+            "velocity_deviation": 0.8,
+            "new_counterparty_ratio": 1.0
+          },
+          "current_tx_count": 148,
+          "new_counterparty_ratio": 1.0,
+          "deviation_message": "Account has no prior commercial history; 100% of transaction counterparties are newly introduced."
+        }
+      },
+      "primary_transaction_id": null,
+      "source_tool": "orchestrator"
+    },
+    {
+      "category": "lineage",
+      "severity": "HIGH",
+      "title": "Potential Downstream Fund Movement",
+      "explanation": "Heuristic analysis identified 1 candidate downstream transaction(s) with lineage strength 0.32. Based on temporal proximity and amount relationships. Type: potential_downstream_lineage (not confirmed).",
+      "calculation": "lineage_strength = 0.318",
+      "data": {
+        "origin_transaction": "TXN-DEMO-S001-001",
+        "origin_receiver": "ACC-B-001",
+        "candidate_downstream_transactions": [
+          {
+            "transaction_id": "TXN-DEMO-S001-002",
+            "from_account": "ACC-B-001",
+            "to_account": "ACC-C-001",
+            "amount": 320000.0,
+            "timestamp": "2026-08-14 10:21:00",
+            "depth": 1,
+            "temporal_proximity_hours": 0.3,
+            "amount_ratio": 0.32,
+            "hop_strength": 0.318
+          }
+        ],
+        "depth": 1,
+        "lineage_strength": 0.318,
+        "reason": "Found 1 candidate downstream transaction(s) across 1 hop(s). Signals: temporal proximity and amount relationship (not confirmed).",
+        "lineage_type": "potential_downstream_lineage",
+        "disclaimer": "This is a heuristic estimate based on temporal proximity and amount relationships. Not a confirmed fund trace."
+      },
+      "primary_transaction_id": null,
+      "source_tool": "orchestrator"
+    }
+  ],
+  "timeline": {
+    "case_id": "CASE-DEMO-001",
+    "account_id": "ACC-B-001",
+    "events": [
+      {
+        "timestamp": "2026-08-14T10:04:00",
+        "time_str": "10:04",
+        "direction": "inflow",
+        "amount": 1000000.0,
+        "amount_inr_str": "Rs 10.0L",
+        "counterparty_id": "ACC-A-001",
+        "channel": "RTGS",
+        "transaction_id": "TXN-DEMO-S001-001",
+        "annotations": [
+          "large_amount",
+          "large_inflow",
+          "suspicious_pattern"
+        ]
+      },
+      {
+        "timestamp": "2026-08-14T10:21:00",
+        "time_str": "10:21",
+        "direction": "outflow",
+        "amount": 320000.0,
+        "amount_inr_str": "Rs 3.2L",
+        "counterparty_id": "ACC-C-001",
+        "channel": "IMPS",
+        "transaction_id": "TXN-DEMO-S001-002",
+        "annotations": [
+          "significant_outflow",
+          "suspicious_pattern"
+        ]
+      },
+      {
+        "timestamp": "2026-08-14T10:36:00",
+        "time_str": "10:36",
+        "direction": "outflow",
+        "amount": 280000.0,
+        "amount_inr_str": "Rs 2.8L",
+        "counterparty_id": "ACC-D-001",
+        "channel": "NEFT",
+        "transaction_id": "TXN-DEMO-S001-003",
+        "annotations": [
+          "significant_outflow",
+          "suspicious_pattern"
+        ]
+      },
+      {
+        "timestamp": "2026-08-14T10:52:00",
+        "time_str": "10:52",
+        "direction": "outflow",
+        "amount": 170000.0,
+        "amount_inr_str": "Rs 1.7L",
+        "counterparty_id": "ACC-E-001",
+        "channel": "UPI",
+        "transaction_id": "TXN-DEMO-S001-004",
+        "annotations": [
+          "significant_outflow",
+          "suspicious_pattern"
+        ]
+      },
+      {
+        "timestamp": "2026-08-14T11:02:00",
+        "time_str": "11:02",
+        "direction": "outflow",
+        "amount": 200000.0,
+        "amount_inr_str": "Rs 2.0L",
+        "counterparty_id": "ACC-F-001",
+        "channel": "IMPS",
+        "transaction_id": "TXN-DEMO-S001-005",
+        "annotations": [
+          "significant_outflow",
+          "suspicious_pattern"
+        ]
+      }
+    ],
+    "count": 5
+  },
+  "explanation": {
+    "shap_contributions": {
+      "weighted_out_degree": 1.558,
+      "weighted_in_degree": 1.2798,
+      "betweenness_centrality": -0.8262,
+      "behavior_deviation_score": 0.6878,
+      "k_hop_network_size": -0.6813,
+      "24h_tx_count": 0.2945,
+      "in_degree": 0.1824,
+      "counterparty_count": -0.1683,
+      "24h_outflow_total": 0.1378,
+      "graph_signal": -0.1328,
+      "recipient_concentration": 0.1213,
+      "24h_transaction_velocity": 0.0845,
+      "24h_inflow_total": -0.0828,
+      "inflow_total_24h": 0.0582,
+      "fan_out": -0.0458
+    },
+    "source": "xgboost_shap"
+  },
+  "sensitivity": {
+    "counterfactual": {
+      "baseline": 75.8,
+      "without_flow": 63.6,
+      "without_graph": 73.6,
+      "without_behavior": 63.1,
+      "without_temporal": 67.0,
+      "without_xgboost": 56.0,
+      "without_autoencoder": 65.8,
+      "without_isolation_forest": 65.8
+    },
+    "baseline": 75.8
+  },
+  "report": {
+    "case_id": "CASE-DEMO-001",
+    "account_id": "ACC-B-001",
+    "priority_score": 75.8,
+    "final_score": 75.8,
+    "risk_band": "HIGH",
+    "executive_summary": "Account ACC-B-001 flagged with priority score 75.8/100 [HIGH]. Multiple forensic signals elevated. Human review required.",
+    "key_findings": [
+      "Flow signal: 81% \u2014 high conservation ratio",
+      "Temporal signal: 58% \u2014 rapid redistribution",
+      "All 3 ML models elevated"
+    ],
+    "body": "## Investigation Report \u2014 CASE-DEMO-001\n\n**Investigation Priority Score: 75.8/100 [HIGH]**\n**Subject Account: ACC-B-001**\n\n---\n\n### Executive Summary\n\nAccount ACC-B-001 has been flagged for investigation review with a priority score of 75.8/100 (risk band: HIGH). Multiple independent signals \u2014 flow analysis, temporal patterns, behavioral deviation, and graph structure \u2014 simultaneously elevated, which increases investigation priority. This report summarizes the observed signals and recommends human review. This analysis does not confirm or establish any wrongdoing.\n\n---\n\n### Observed Signals\n\n- **Flow Signal:** 81% \u2014 Elevated fund conservation ratio indicates a high proportion of received funds were rapidly forwarded to recipients.\n- **Temporal Signal:** 58% \u2014 Rapid redistribution timing detected; funds moved within a short observation window.\n- **Behavioral Signal:** 85% \u2014 Account activity deviated from historical baseline.\n- **Graph Signal:** 14% \u2014 Hub-like transaction network pattern observed.\n\n### ML Model Signals\n\n- XGBoost (supervised): 0.9927\n- Isolation Forest (unsupervised): 1.0\n- Autoencoder (reconstruction): 1.0\n\nAll three models independently elevated scores for this account.\n\n---\n\n### Interpretation\n\nThe combination of rapid fund redistribution (flow signal), compressed outflow timing (temporal signal), new counterparty activity, and hub-like network position suggests patterns warranting human investigation. These patterns are consistent with layering scenarios but may also reflect legitimate business activity \u2014 for example, a payments aggregator or supplier payment hub.\n\n---\n\n### Uncertainty and Limitations\n\n- Analysis is based on synthetic/anonymized demonstration data only.\n- Behavioral baseline limited by available transaction history.\n- Graph analysis covers a 30-day observation window.\n- No confirmation of fund ownership or intent is possible from transaction data alone.\n\n---\n\n### Recommended Review Steps\n\n1. Request supporting documentation for large inflow (source of funds).\n2. Review counterparty profiles for recently added recipients.\n3. Assess whether outflow pattern is consistent with declared business activity.\n4. Check for prior alerts or SARs on connected accounts.\n5. Human investigator to review evidence ledger and make final determination.\n\n---\n\n*\u26a0 This report is generated by LaundraLens X for investigation support only. All actions require human review and authorization. This is SYNTHETIC DEMONSTRATION DATA \u2014 not real financial data.*\n",
+    "full_text": "## Investigation Report \u2014 CASE-DEMO-001\n\n**Investigation Priority Score: 75.8/100 [HIGH]**\n**Subject Account: ACC-B-001**\n\n---\n\n### Executive Summary\n\nAccount ACC-B-001 has been flagged for investigation review with a priority score of 75.8/100 (risk band: HIGH). Multiple independent signals \u2014 flow analysis, temporal patterns, behavioral deviation, and graph structure \u2014 simultaneously elevated, which increases investigation priority. This report summarizes the observed signals and recommends human review. This analysis does not confirm or establish any wrongdoing.\n\n---\n\n### Observed Signals\n\n- **Flow Signal:** 81% \u2014 Elevated fund conservation ratio indicates a high proportion of received funds were rapidly forwarded to recipients.\n- **Temporal Signal:** 58% \u2014 Rapid redistribution timing detected; funds moved within a short observation window.\n- **Behavioral Signal:** 85% \u2014 Account activity deviated from historical baseline.\n- **Graph Signal:** 14% \u2014 Hub-like transaction network pattern observed.\n\n### ML Model Signals\n\n- XGBoost (supervised): 0.9927\n- Isolation Forest (unsupervised): 1.0\n- Autoencoder (reconstruction): 1.0\n\nAll three models independently elevated scores for this account.\n\n---\n\n### Interpretation\n\nThe combination of rapid fund redistribution (flow signal), compressed outflow timing (temporal signal), new counterparty activity, and hub-like network position suggests patterns warranting human investigation. These patterns are consistent with layering scenarios but may also reflect legitimate business activity \u2014 for example, a payments aggregator or supplier payment hub.\n\n---\n\n### Uncertainty and Limitations\n\n- Analysis is based on synthetic/anonymized demonstration data only.\n- Behavioral baseline limited by available transaction history.\n- Graph analysis covers a 30-day observation window.\n- No confirmation of fund ownership or intent is possible from transaction data alone.\n\n---\n\n### Recommended Review Steps\n\n1. Request supporting documentation for large inflow (source of funds).\n2. Review counterparty profiles for recently added recipients.\n3. Assess whether outflow pattern is consistent with declared business activity.\n4. Check for prior alerts or SARs on connected accounts.\n5. Human investigator to review evidence ledger and make final determination.\n\n---\n\n*\u26a0 This report is generated by LaundraLens X for investigation support only. All actions require human review and authorization. This is SYNTHETIC DEMONSTRATION DATA \u2014 not real financial data.*\n",
+    "generated_by": "deterministic_fallback",
+    "disclaimer": "Evidence-grounded generation: Factual claims are generated from structured investigation evidence. LLM-generated summaries are constrained to retrieved evidence and remain subject to human review. Findings are traceable to persisted transaction and investigation records. Synthetic data \u2014 not real financial data."
+  },
+  "duration_seconds": 2.0,
+  "feature_version": "1.0.0",
+  "model_version": "1.0.0",
+  "random_seed": 42,
+  "generated_at": "2026-09-04T00:23:56.582464+00:00",
+  "priority_score": 75.8,
+  "signals": {
+    "temporal": 0.5871,
+    "flow": 0.8145,
+    "behavior": 0.85,
+    "graph": 0.1475
+  },
+  "shap_contributions": {
+    "weighted_out_degree": 1.558,
+    "weighted_in_degree": 1.2798,
+    "betweenness_centrality": -0.8262,
+    "behavior_deviation_score": 0.6878,
+    "k_hop_network_size": -0.6813,
+    "24h_tx_count": 0.2945,
+    "in_degree": 0.1824,
+    "counterparty_count": -0.1683,
+    "24h_outflow_total": 0.1378,
+    "graph_signal": -0.1328,
+    "recipient_concentration": 0.1213,
+    "24h_transaction_velocity": 0.0845,
+    "24h_inflow_total": -0.0828,
+    "inflow_total_24h": 0.0582,
+    "fan_out": -0.0458
+  },
+  "counterfactual": {
+    "baseline": 75.8,
+    "without_flow": 63.6,
+    "without_graph": 73.6,
+    "without_behavior": 63.1,
+    "without_temporal": 67.0,
+    "without_xgboost": 56.0,
+    "without_autoencoder": 65.8,
+    "without_isolation_forest": 65.8
+  }
+}

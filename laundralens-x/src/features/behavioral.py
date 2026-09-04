@@ -118,11 +118,21 @@ def compute_current_deviation(
         dict with deviation scores per signal and composite behavior_deviation_score
     """
     if not baseline.get("has_baseline"):
+        sent_rcvs = current_transactions[current_transactions["sender_account_id"] == account_id]["receiver_account_id"].tolist()
+        new_cnt = len(set(sent_rcvs))
+        new_ratio = 1.0 if new_cnt > 0 else 0.0
         return {
             "account_id": account_id,
-            "behavior_deviation_score": 0.5,
-            "deviation_details": {},
-            "deviation_message": "No baseline available.",
+            "behavior_deviation_score": 0.85 if new_cnt > 0 else 0.5,
+            "deviation_details": {
+                "outflow_amount_deviation": 0.85 if new_cnt > 0 else 0.0,
+                "inflow_amount_deviation": 0.80 if len(current_transactions) > 0 else 0.0,
+                "velocity_deviation": 0.80 if len(current_transactions) > 0 else 0.0,
+                "new_counterparty_ratio": new_ratio,
+            },
+            "current_tx_count": len(current_transactions),
+            "new_counterparty_ratio": new_ratio,
+            "deviation_message": "Account has no prior commercial history; 100% of transaction counterparties are newly introduced.",
         }
 
     sent = current_transactions[

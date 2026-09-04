@@ -24,6 +24,7 @@ _investigation_cache: dict = {}
 
 class StartInvestigationRequest(BaseModel):
     alert_id: str
+    force_rerun: bool = False
 
 
 @router.post("")
@@ -31,31 +32,44 @@ def start_investigation(
     req: StartInvestigationRequest,
     db: Session = Depends(get_db),
 ):
-    """Start a new investigation from an alert. Runs synchronously (< 20s)."""
+    """Start a new investigation from an alert or load canonical snapshot."""
+    from src.risk.snapshot import load_snapshot
+
     alert = db.query(Alert).filter(Alert.alert_id == req.alert_id).first()
     if not alert:
         raise HTTPException(status_code=404, detail=f"Alert {req.alert_id} not found")
 
-    # Check for existing complete investigation
-    existing = db.query(Investigation).filter(
-        Investigation.alert_id == req.alert_id,
-        Investigation.status == "REPORT_READY",
-    ).first()
-    if existing:
-        cached = _investigation_cache.get(existing.case_id, {})
-        if cached:
-            return cached
+    # Check for existing complete investigation unless force_rerun requested
+    if not req.force_rerun:
+        existing = db.query(Investigation).filter(
+            Investigation.alert_id == req.alert_id,
+            Investigation.status == "REPORT_READY",
+        ).first()
+        if existing:
+            snap = load_snapshot(existing.case_id)
+            if snap:
+                _investigation_cache[existing.case_id] = snap.to_dict()
+                return snap.to_dict()
+            cached = _investigation_cache.get(existing.case_id, {})
+            if cached:
+                return cached
 
-    # Create new investigation record
-    case_id = f"CASE-{uuid.uuid4().hex[:8].upper()}"
-    inv = Investigation(
-        case_id=case_id,
-        alert_id=req.alert_id,
-        account_id=alert.account_id,
-        status="ALERT_CREATED",
-    )
-    db.add(inv)
-    db.commit()
+    # Deterministic case ID for demo scenario, or UUID for others
+    if req.alert_id == "ALERT-SCENARIO-001":
+        case_id = "CASE-DEMO-001"
+    else:
+        case_id = f"CASE-{uuid.uuid4().hex[:8].upper()}"
+
+    inv = db.query(Investigation).filter(Investigation.case_id == case_id).first()
+    if not inv:
+        inv = Investigation(
+            case_id=case_id,
+            alert_id=req.alert_id,
+            account_id=alert.account_id,
+            status="ALERT_CREATED",
+        )
+        db.add(inv)
+        db.commit()
 
     # Run investigation (synchronous)
     try:
@@ -74,8 +88,12 @@ def start_investigation(
 
 @router.get("/{case_id}")
 def get_investigation(case_id: str, db: Session = Depends(get_db)):
-    """Get investigation state and summary."""
-    # Check cache first
+    """Get investigation state and summary from canonical snapshot or DB."""
+    from src.risk.snapshot import load_snapshot
+    snap = load_snapshot(case_id)
+    if snap:
+        return snap.to_dict()
+
     cached = _investigation_cache.get(case_id)
     if cached:
         return cached
